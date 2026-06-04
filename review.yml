@@ -1,0 +1,65 @@
+---
+name: Shanghai Jiao Tong University
+description: Shanghai Jiao Tong University public developer/API footprint review for APIs.json cataloging.
+url: https://raw.githubusercontent.com/api-evangelist/shanghai-jiao-tong-university/refs/heads/main/review.yml
+created: '2026-06-03'
+modified: '2026-06-03'
+reviews:
+  - date: '2026-06-03'
+    rating: 3
+    summary: >-
+      SJTU operates a genuine official developer platform at developer.sjtu.edu.cn
+      (HTTP 200) documenting jAccount OAuth 2.0 / OpenID Connect SSO and a GraphQL
+      data resources platform (graphql.sjtu.edu.cn) spanning account, faculty,
+      undergraduate teaching, and paper data. The OIDC documentation and GraphQL
+      docs pages are publicly readable and verified live. The data APIs themselves
+      are gated behind an application/approval process, and the GraphQL endpoint and
+      jAccount OAuth endpoints require credentials, so they were not exercised. The
+      api.sjtu.edu.cn host did not resolve directly during probing. Much of the
+      documentation is in Chinese. No fabrication: only endpoints and docs confirmed
+      live are listed; no SignUp/free-tier was advertised publicly. No single official
+      university-wide GitHub org exists; sjtug (SJTU *nix User Group) is the most
+      established verified community org.
+    endpoints:
+      - url: https://developer.sjtu.edu.cn/
+        status: 200
+        note: Official SJTU developer platform landing page.
+      - url: https://developer.sjtu.edu.cn/auth/oidc.html
+        status: 200
+        note: jAccount OAuth 2.0 / OIDC integration documentation.
+      - url: https://developer.sjtu.edu.cn/api/list.html
+        status: 200
+        note: API list / catalog page.
+      - url: https://developer.sjtu.edu.cn/graphql/graphql.html
+        status: 200
+        note: GraphQL syntax and data resources documentation.
+      - url: https://developer.sjtu.edu.cn/graphql/student.html
+        status: 200
+        note: Undergraduate teaching GraphQL APIs documentation.
+      - url: https://developer.sjtu.edu.cn/graphql/faculty.html
+        status: 200
+        note: Faculty GraphQL APIs documentation.
+      - url: https://developer.sjtu.edu.cn/graphql/paper.html
+        status: 200
+        note: Academic paper GraphQL APIs documentation.
+      - url: https://developer.sjtu.edu.cn/graphql/account.html
+        status: 200
+        note: Account GraphQL APIs documentation.
+      - url: https://graphql.sjtu.edu.cn/graphql
+        status: 200
+        note: GraphQL data resources endpoint (POST; gated, requires approved application).
+      - url: https://jaccount.sjtu.edu.cn/oauth2/authorize
+        status: 400
+        note: jAccount OAuth authorization endpoint; resolves but rejects request without valid params.
+      - url: https://api.sjtu.edu.cn/
+        status: 0
+        note: Referenced API base host did not resolve directly during probing.
+      - url: https://en.sjtu.edu.cn/
+        status: 200
+        note: Official English university website.
+      - url: https://www.lib.sjtu.edu.cn/
+        status: 200
+        note: SJTU Library; no public library API confirmed.
+      - url: https://github.com/sjtug
+        status: 200
+        note: SJTU *nix User Group GitHub org (community, verified). No single official university org.
