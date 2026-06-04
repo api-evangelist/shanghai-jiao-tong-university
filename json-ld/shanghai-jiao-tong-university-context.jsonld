@@ -1,0 +1,54 @@
+{
+  "@context": {
+    "schema": "https://schema.org/",
+    "sjtu": "https://developer.sjtu.edu.cn/vocab#",
+    "name": "schema:name",
+    "url": "schema:url",
+    "description": "schema:description",
+    "foundingDate": "schema:foundingDate",
+    "location": "schema:location",
+    "sameAs": "schema:sameAs",
+    "developerPortal": {
+      "@id": "sjtu:developerPortal",
+      "@type": "@id"
+    },
+    "api": {
+      "@id": "sjtu:api",
+      "@type": "@id"
+    },
+    "apiName": "schema:name",
+    "humanURL": {
+      "@id": "schema:url",
+      "@type": "@id"
+    },
+    "baseURL": {
+      "@id": "sjtu:baseURL",
+      "@type": "@id"
+    }
+  },
+  "@type": "schema:CollegeOrUniversity",
+  "name": "Shanghai Jiao Tong University",
+  "url": "https://en.sjtu.edu.cn/",
+  "description": "Shanghai Jiao Tong University (SJTU), founded in 1896 in Shanghai, China, is one of China's top research universities. It operates an official developer platform exposing jAccount SSO (OAuth 2.0 / OpenID Connect) and a GraphQL-based data resources platform.",
+  "foundingDate": "1896",
+  "location": "Shanghai, China",
+  "developerPortal": "https://developer.sjtu.edu.cn/",
+  "sameAs": [
+    "https://github.com/sjtug",
+    "https://www.linkedin.com/school/shanghai-jiao-tong-university/"
+  ],
+  "api": [
+    {
+      "@type": "schema:WebAPI",
+      "apiName": "jAccount Single Sign-On (OAuth 2.0 / OIDC)",
+      "humanURL": "https://developer.sjtu.edu.cn/auth/oidc.html",
+      "baseURL": "https://jaccount.sjtu.edu.cn/oauth2"
+    },
+    {
+      "@type": "schema:WebAPI",
+      "apiName": "SJTU Data Resources GraphQL API",
+      "humanURL": "https://developer.sjtu.edu.cn/graphql/graphql.html",
+      "baseURL": "https://graphql.sjtu.edu.cn/graphql"
+    }
+  ]
+}
