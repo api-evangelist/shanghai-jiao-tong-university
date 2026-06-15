@@ -1,4 +1,3 @@
----
 aid: shanghai-jiao-tong-university
 name: Shanghai Jiao Tong University
 description: >-
@@ -17,106 +16,108 @@ access: 3rd-Party
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 url: https://raw.githubusercontent.com/api-evangelist/shanghai-jiao-tong-university/refs/heads/main/apis.yml
 tags:
-  - Education
-  - Higher Education
-  - University
-  - Research
-  - China
-  - GraphQL
-  - Identity
-  - OpenID Connect
+- Education
+- Higher Education
+- University
+- Research
+- China
+- GraphQL
+- Identity
+- OpenID Connect
 created: '2026-06-03'
 modified: '2026-06-03'
 specificationVersion: '0.19'
 apis:
-  - aid: shanghai-jiao-tong-university:jaccount-oauth
-    name: jAccount Single Sign-On (OAuth 2.0 / OIDC)
-    description: >-
-      jAccount is SJTU's identity and single sign-on system. It provides OAuth 2.0
-      and OpenID Connect authorization for third-party member sites, including an
-      authorization endpoint, token endpoint, and user profile API. Client
-      registration (client_id / client_secret) is required.
-    humanURL: https://developer.sjtu.edu.cn/auth/oidc.html
-    baseURL: https://jaccount.sjtu.edu.cn/oauth2
-    tags: [ Authentication, Identity, OAuth, OpenID Connect, SSO ]
-    properties:
-      - type: Documentation
-        url: https://developer.sjtu.edu.cn/auth/oidc.html
-  - aid: shanghai-jiao-tong-university:data-graphql
-    name: SJTU Data Resources GraphQL API
-    description: >-
-      A GraphQL-based data resources API providing access to institutional data
-      categories including account information, faculty/staff data, undergraduate
-      teaching records, and academic papers. Queries are POSTed to a single GraphQL
-      endpoint. Access requires an approved data resource application.
-    humanURL: https://developer.sjtu.edu.cn/graphql/graphql.html
-    baseURL: https://graphql.sjtu.edu.cn/graphql
-    tags: [ GraphQL, Data, Academic, Research, Teaching ]
-    properties:
-      - type: Documentation
-        url: https://developer.sjtu.edu.cn/graphql/graphql.html
-      - type: Documentation
-        url: https://developer.sjtu.edu.cn/api/list.html
-  - aid: shanghai-jiao-tong-university:graphql-student
-    name: Undergraduate Teaching APIs
-    description: >-
-      GraphQL APIs exposing undergraduate teaching and course-related information.
-      Course interfaces return current academic year data. Part of the gated data
-      resources platform.
-    humanURL: https://developer.sjtu.edu.cn/graphql/student.html
-    tags: [ GraphQL, Teaching, Courses, Academic ]
-    properties:
-      - type: Documentation
-        url: https://developer.sjtu.edu.cn/graphql/student.html
-  - aid: shanghai-jiao-tong-university:graphql-faculty
-    name: Faculty APIs
-    description: >-
-      GraphQL APIs providing faculty and staff profile data. Part of the gated data
-      resources platform requiring an approved application.
-    humanURL: https://developer.sjtu.edu.cn/graphql/faculty.html
-    tags: [ GraphQL, Faculty, Data ]
-    properties:
-      - type: Documentation
-        url: https://developer.sjtu.edu.cn/graphql/faculty.html
-  - aid: shanghai-jiao-tong-university:graphql-paper
-    name: Academic Paper APIs
-    description: >-
-      GraphQL APIs providing access to academic paper and publication metadata.
-      Part of the gated data resources platform requiring an approved application.
-    humanURL: https://developer.sjtu.edu.cn/graphql/paper.html
-    tags: [ GraphQL, Papers, Publications, Research ]
-    properties:
-      - type: Documentation
-        url: https://developer.sjtu.edu.cn/graphql/paper.html
-  - aid: shanghai-jiao-tong-university:graphql-account
-    name: Account APIs
-    description: >-
-      GraphQL APIs used to retrieve account-related information. Access requires an
-      approved data resource application.
-    humanURL: https://developer.sjtu.edu.cn/graphql/account.html
-    tags: [ GraphQL, Account, Identity, Data ]
-    properties:
-      - type: Documentation
-        url: https://developer.sjtu.edu.cn/graphql/account.html
-common:
-  - type: Website
-    url: https://en.sjtu.edu.cn/
-  - type: DeveloperPortal
-    url: https://developer.sjtu.edu.cn/
-  - type: Authentication
+- aid: shanghai-jiao-tong-university:jaccount-oauth
+  name: jAccount Single Sign-On (OAuth 2.0 / OIDC)
+  description: >-
+    jAccount is SJTU's identity and single sign-on system. It provides OAuth 2.0
+    and OpenID Connect authorization for third-party member sites, including an
+    authorization endpoint, token endpoint, and user profile API. Client
+    registration (client_id / client_secret) is required.
+  humanURL: https://developer.sjtu.edu.cn/auth/oidc.html
+  baseURL: https://jaccount.sjtu.edu.cn/oauth2
+  tags: [Authentication, Identity, OAuth, OpenID Connect, SSO]
+  properties:
+  - type: Documentation
     url: https://developer.sjtu.edu.cn/auth/oidc.html
-  - type: GitHub
-    url: https://github.com/sjtug
-  - type: LinkedIn
-    url: https://www.linkedin.com/school/shanghai-jiao-tong-university/
-  - type: Plans
-    url: plans/shanghai-jiao-tong-university-plans-pricing.yml
-  - type: RateLimits
-    url: rate-limits/shanghai-jiao-tong-university-rate-limits.yml
-  - type: FinOps
-    url: finops/shanghai-jiao-tong-university-finops.yml
-  - type: Review
-    url: review.yml
+- aid: shanghai-jiao-tong-university:data-graphql
+  name: SJTU Data Resources GraphQL API
+  description: >-
+    A GraphQL-based data resources API providing access to institutional data
+    categories including account information, faculty/staff data, undergraduate
+    teaching records, and academic papers. Queries are POSTed to a single GraphQL
+    endpoint. Access requires an approved data resource application.
+  humanURL: https://developer.sjtu.edu.cn/graphql/graphql.html
+  baseURL: https://graphql.sjtu.edu.cn/graphql
+  tags: [GraphQL, Data, Academic, Research, Teaching]
+  properties:
+  - type: Documentation
+    url: https://developer.sjtu.edu.cn/graphql/graphql.html
+  - type: Documentation
+    url: https://developer.sjtu.edu.cn/api/list.html
+  - url: graphql/shanghai-jiao-tong-university-graphql.md
+    type: GraphQL
+- aid: shanghai-jiao-tong-university:graphql-student
+  name: Undergraduate Teaching APIs
+  description: >-
+    GraphQL APIs exposing undergraduate teaching and course-related information.
+    Course interfaces return current academic year data. Part of the gated data
+    resources platform.
+  humanURL: https://developer.sjtu.edu.cn/graphql/student.html
+  tags: [GraphQL, Teaching, Courses, Academic]
+  properties:
+  - type: Documentation
+    url: https://developer.sjtu.edu.cn/graphql/student.html
+- aid: shanghai-jiao-tong-university:graphql-faculty
+  name: Faculty APIs
+  description: >-
+    GraphQL APIs providing faculty and staff profile data. Part of the gated data
+    resources platform requiring an approved application.
+  humanURL: https://developer.sjtu.edu.cn/graphql/faculty.html
+  tags: [GraphQL, Faculty, Data]
+  properties:
+  - type: Documentation
+    url: https://developer.sjtu.edu.cn/graphql/faculty.html
+- aid: shanghai-jiao-tong-university:graphql-paper
+  name: Academic Paper APIs
+  description: >-
+    GraphQL APIs providing access to academic paper and publication metadata.
+    Part of the gated data resources platform requiring an approved application.
+  humanURL: https://developer.sjtu.edu.cn/graphql/paper.html
+  tags: [GraphQL, Papers, Publications, Research]
+  properties:
+  - type: Documentation
+    url: https://developer.sjtu.edu.cn/graphql/paper.html
+- aid: shanghai-jiao-tong-university:graphql-account
+  name: Account APIs
+  description: >-
+    GraphQL APIs used to retrieve account-related information. Access requires an
+    approved data resource application.
+  humanURL: https://developer.sjtu.edu.cn/graphql/account.html
+  tags: [GraphQL, Account, Identity, Data]
+  properties:
+  - type: Documentation
+    url: https://developer.sjtu.edu.cn/graphql/account.html
+common:
+- type: Website
+  url: https://en.sjtu.edu.cn/
+- type: DeveloperPortal
+  url: https://developer.sjtu.edu.cn/
+- type: Authentication
+  url: https://developer.sjtu.edu.cn/auth/oidc.html
+- type: GitHub
+  url: https://github.com/sjtug
+- type: LinkedIn
+  url: https://www.linkedin.com/school/shanghai-jiao-tong-university/
+- type: Plans
+  url: plans/shanghai-jiao-tong-university-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/shanghai-jiao-tong-university-rate-limits.yml
+- type: FinOps
+  url: finops/shanghai-jiao-tong-university-finops.yml
+- type: Review
+  url: review.yml
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
+- FN: Kin Lane
+  email: kin@apievangelist.com
