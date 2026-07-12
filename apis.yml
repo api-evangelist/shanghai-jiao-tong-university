@@ -100,6 +100,8 @@ apis:
   - type: Documentation
     url: https://developer.sjtu.edu.cn/graphql/account.html
 common:
+- type: DomainSecurity
+  url: security/shanghai-jiao-tong-university-domain-security.yml
 - type: Website
   url: https://en.sjtu.edu.cn/
 - type: DeveloperPortal
