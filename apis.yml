@@ -38,7 +38,7 @@ tags:
 - OpenID Connect
 created: '2026-06-03'
 modified: '2026-06-03'
-specificationVersion: '0.19'
+specificationVersion: '0.23'
 apis:
 - aid: shanghai-jiao-tong-university:jaccount-oauth
   name: jAccount Single Sign-On (OAuth 2.0 / OIDC)
