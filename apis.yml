@@ -49,7 +49,17 @@ apis:
     registration (client_id / client_secret) is required.
   humanURL: https://developer.sjtu.edu.cn/auth/oidc.html
   baseURL: https://jaccount.sjtu.edu.cn/oauth2
-  tags: [Authentication, Identity, OAuth, OpenID Connect, SSO]
+  tags:
+  - Authentication
+  - Identity
+  - OpenID Connect
+  - SSO
+  tags_raw:
+  - Authentication
+  - Identity
+  - OAuth
+  - OpenID Connect
+  - SSO
   properties:
   - type: Documentation
     url: https://developer.sjtu.edu.cn/auth/oidc.html
