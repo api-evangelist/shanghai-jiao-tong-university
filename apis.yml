@@ -1,158 +1,432 @@
 aid: shanghai-jiao-tong-university
 name: Shanghai Jiao Tong University
+x-type: university
+x-category: Public Research University
 description: >-
-  Shanghai Jiao Tong University (SJTU), founded in 1896 and located in Shanghai,
-  China (Mainland), is one of China's top research universities and is ranked #56
-  in the QS World University Rankings 2025. SJTU operates an official developer
-  platform (developer.sjtu.edu.cn) that exposes internal data resources and
-  infrastructure to authorized developers. Its public-facing programmable footprint
-  centers on the jAccount single sign-on system (OAuth 2.0 / OpenID Connect) and a
-  GraphQL-based data resources platform covering account, faculty, undergraduate
-  teaching, and academic paper data. Access to the data APIs is gated behind an
-  application and approval process; the SSO/OIDC integration is documented publicly.
+  Shanghai Jiao Tong University (上海交通大学, SJTU), founded 1896 in Shanghai, is a C9 League public
+  research university and one of very few institutions anywhere that operates a first-party API
+  platform rather than buying one. Its Network and Information Center runs a documented developer
+  portal covering three institution-operated surfaces, all on sjtu.edu.cn and none a vendor
+  tenancy: the jAccount OAuth 2.0 / OpenID Connect / Shibboleth identity provider; a REST Open API
+  at api.sjtu.edu.cn with 59 documented operations across 13 families (profile, directory, campus
+  card, Siyuan payment code, timetables, exams and GPA, mail, notifications, files, finance,
+  barcode, calendar, e-signature); and a gated Data Resources API. Alongside sit the 交我办 campus
+  super-app and the 交我算 HPC service. What SJTU does not publish is equally real: no OpenAPI,
+  changelog, status page, deprecation policy or self-service signup; docs only in Chinese; and no
+  Crossref, DataCite, ORCID or OAI-PMH anywhere.
 type: Index
 deliveryModel:
   model: saas
   open_source: false
-  commercial: true
-  callable_host: false
-  label: Hosted service · you call their endpoint
-  confidence: medium
+  commercial: false
+  callable_host: true
+  label: Institution-operated campus platform · you call their endpoint
+  confidence: high
   source:
-  - pricing
-  generated: '2026-08-28'
-  method: derived
+  - openapi/shanghai-jiao-tong-university-open-api-openapi.yml
+  - https://developer.sjtu.edu.cn/api/overview.html
+  generated: '2026-08-30'
+  method: probed
 accessModel:
   pricing: free
-  onboarding: unknown
+  onboarding: application
   trial: false
   try_now: false
   public: false
-  label: Free
-  confidence: medium
+  label: Free, but gated — jAccount required, application approved per scope
+  confidence: high
   source:
-  - plans
-  generated: '2026-07-22'
-  method: derived
-position: Consumer
-access: 3rd-Party
+  - authentication/shanghai-jiao-tong-university-authentication.yml
+  - https://developer.sjtu.edu.cn/api/overview.html
+  generated: '2026-08-30'
+  method: searched
+position: Producing
+access: 1st-Party
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/shanghai-jiao-tong-university.png
 url: https://raw.githubusercontent.com/api-evangelist/shanghai-jiao-tong-university/refs/heads/main/apis.yml
 tags:
-- Education
-- Higher Education
 - University
+- Higher Education
+- Education
 - Research
 - China
-- GraphQL
-- Identity
+- C9 League
+- Identity Federation
+- Course Catalog
+- Research Computing
+- Campus Life
+- OAuth
 - OpenID Connect
+- SAML
+- Shibboleth
+- Payments
 created: '2026-06-03'
-modified: '2026-06-03'
+modified: '2026-08-30'
 specificationVersion: '0.23'
 apis:
-- aid: shanghai-jiao-tong-university:jaccount-oauth
-  name: jAccount Single Sign-On (OAuth 2.0 / OIDC)
+- aid: shanghai-jiao-tong-university:open-api
+  name: SJTU Open API
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/shanghai-jiao-tong-university.png
+  x-operator: institution
   description: >-
-    jAccount is SJTU's identity and single sign-on system. It provides OAuth 2.0
-    and OpenID Connect authorization for third-party member sites, including an
-    authorization endpoint, token endpoint, and user profile API. Client
-    registration (client_id / client_secret) is required.
+    The university's own REST API platform (开放API), operated by the SJTU Network and Information
+    Center at api.sjtu.edu.cn under OAuth 2.0 issued by its own jAccount authorization server. 59
+    documented operations across 13 families: Profile, Task, Enterprise, File, Notification, Mail,
+    Finance, Education, Card, Unicode (思源码), Barcode, Calendar and Signature. Every response uses
+    one envelope — errno, error, total, nextToken, entities[] — and field release is scope
+    controlled, so the same Profile operation returns a different object shape to a `basic` token
+    than to a `privacy` one. Verified live 2026-08-30: an unauthenticated GET of /v1/me/profile
+    returns HTTP 403 with the documented {"errno":10002,"error":"Authentication Failed."}. SJTU
+    publishes no OpenAPI; the specification here is DERIVED from the university's own HTML
+    documentation and marked as such in info.x-provenance.
+  humanURL: https://developer.sjtu.edu.cn/api/overview.html
+  baseURL: https://api.sjtu.edu.cn
+  tags:
+  - Campus Life
+  - Identity
+  - Payments
+  - Course Catalog
+  - Messaging
+  - Storage
+  properties:
+  - type: OpenAPI
+    url: openapi/shanghai-jiao-tong-university-open-api-openapi.yml
+  - type: Documentation
+    url: https://developer.sjtu.edu.cn/api/overview.html
+  - type: APIReference
+    url: https://developer.sjtu.edu.cn/api/list.html
+  - type: Authentication
+    url: authentication/shanghai-jiao-tong-university-authentication.yml
+  - type: OAuthScopes
+    url: scopes/shanghai-jiao-tong-university-scopes.yml
+  - type: ErrorCatalog
+    url: errors/shanghai-jiao-tong-university-errors.yml
+  - type: JSONSchema
+    url: json-schema/shanghai-jiao-tong-university-envelope.json
+  - type: JSONSchema
+    url: json-schema/shanghai-jiao-tong-university-profile.json
+  - type: Examples
+    url: examples/shanghai-jiao-tong-university-examples.yml
+  - type: Conventions
+    url: rules/shanghai-jiao-tong-university-design-rules.yml
+  - type: Lifecycle
+    url: lifecycle/shanghai-jiao-tong-university-lifecycle.yml
+  - type: Conformance
+    url: conformance/shanghai-jiao-tong-university-conformance.yml
+  - type: Vocabulary
+    url: vocabulary/shanghai-jiao-tong-university-vocabulary.yml
+  - type: SDKs
+    url: https://developer.sjtu.edu.cn/api/sdk.html
+- aid: shanghai-jiao-tong-university:data-resources
+  name: SJTU Data Resources API
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/shanghai-jiao-tong-university.png
+  x-operator: institution
+  description: >-
+    数据资源 — the university's institutional data-exchange API, exposing account, faculty and staff,
+    undergraduate-teaching, academic-paper and asset records produced by SJTU's own administrative
+    systems. The current contract is REST: ten GET operations under https://graphql.sjtu.edu.cn/v1
+    with query-string filters, first/offset paging capped at 200, OAuth 2.0 client credentials and
+    the exchange_data scope. The host name is a fossil — an earlier GraphQL implementation POSTed
+    queries to /graphql and is now labelled 老版本 (old version) on every data-resource page. This
+    repo described only that GraphQL form until 2026-08-30. Access is doubly gated: by the
+    数据资源申请流程 approval workflow, which grants FIELDS rather than endpoints, and by campus-network
+    restriction — an off-campus request is 302'd to restrict.sjtu.edu.cn and told to use the SJTU VPN.
+    Probed 2026-08-30 and confirmed live-and-gated, not dead.
+  humanURL: https://developer.sjtu.edu.cn/graphql/overview.html
+  baseURL: https://graphql.sjtu.edu.cn/v1
+  tags:
+  - Research
+  - Course Catalog
+  - Data Exchange
+  - Faculty
+  - Assets
+  properties:
+  - type: OpenAPI
+    url: openapi/shanghai-jiao-tong-university-data-resources-openapi.yml
+  - type: Documentation
+    url: https://developer.sjtu.edu.cn/graphql/overview.html
+  - type: APIReference
+    url: https://developer.sjtu.edu.cn/api/list.html
+  - type: JSONSchema
+    url: json-schema/shanghai-jiao-tong-university-account-info.json
+  - type: GraphQL
+    url: graphql/shanghai-jiao-tong-university-graphql.md
+  - type: Lifecycle
+    url: lifecycle/shanghai-jiao-tong-university-lifecycle.yml
+- aid: shanghai-jiao-tong-university:jaccount-oauth
+  name: jAccount Authorization Server (OAuth 2.0 / OpenID Connect)
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/shanghai-jiao-tong-university.png
+  x-operator: institution
+  description: >-
+    SJTU's own identity and single sign-on system, run by the Network and Information Center on the
+    university's own domain. It is a real OAuth 2.0 authorization server — an unparameterised GET of
+    the authorize endpoint returned the correct RFC 6749 error on 2026-08-30 — and it publishes
+    OpenID Connect provider metadata at /oauth2/.well-known/openid-configuration. Three grants are
+    documented per operation: authorization code, client credentials and resource-owner password.
+    The published scope registry runs to 39 scopes on a bitmask (1<<n) model, which callers may
+    combine either by name or by arithmetic sum. Two caveats an integrator needs: the discovery
+    document is served at the issuer-relative path rather than the host root, so a conventional
+    root probe misses it entirely; and id_token_signing_alg_values_supported is HS256 only, so ID
+    tokens are symmetrically signed with the client secret and cannot be verified by a public client.
   humanURL: https://developer.sjtu.edu.cn/auth/oidc.html
   baseURL: https://jaccount.sjtu.edu.cn/oauth2
   tags:
-  - Authentication
   - Identity
+  - Authentication
   - OpenID Connect
-  - SSO
-  tags_raw:
-  - Authentication
-  - Identity
   - OAuth
-  - OpenID Connect
   - SSO
   properties:
   - type: Documentation
     url: https://developer.sjtu.edu.cn/auth/oidc.html
-- aid: shanghai-jiao-tong-university:data-graphql
-  name: SJTU Data Resources GraphQL API
+  - type: Documentation
+    url: https://developer.sjtu.edu.cn/auth/oauth.html
+  - type: Documentation
+    url: https://developer.sjtu.edu.cn/auth/jaccount.html
+  - type: WellKnown
+    url: https://jaccount.sjtu.edu.cn/oauth2/.well-known/openid-configuration
+  - type: WellKnown
+    url: well-known/shanghai-jiao-tong-university-well-known.yml
+  - type: Authentication
+    url: authentication/shanghai-jiao-tong-university-authentication.yml
+  - type: OAuthScopes
+    url: scopes/shanghai-jiao-tong-university-scopes.yml
+  - type: Examples
+    url: examples/shanghai-jiao-tong-university-examples.yml
+- aid: shanghai-jiao-tong-university:jaccount-shibboleth
+  name: SJTU Identity Provider (Shibboleth / SAML 2.0)
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/shanghai-jiao-tong-university.png
+  x-operator: institution
   description: >-
-    A GraphQL-based data resources API providing access to institutional data
-    categories including account information, faculty/staff data, undergraduate
-    teaching records, and academic papers. Queries are POSTed to a single GraphQL
-    endpoint. Access requires an approved data resource application.
-  humanURL: https://developer.sjtu.edu.cn/graphql/graphql.html
-  baseURL: https://graphql.sjtu.edu.cn/graphql
-  tags: [GraphQL, Data, Academic, Research, Teaching]
+    SJTU operates a Shibboleth identity provider and publishes its SAML metadata openly at
+    https://jaccount.sjtu.edu.cn/idp/shibboleth — entityID matching the URL, shibmd:Scope
+    sjtu.edu.cn, display name "SJTU Identity Provider", supporting SAML 2.0, SAML 1.1 and Shibboleth
+    1.0 with four SSO bindings, four single-logout bindings, artifact resolution and a SAML 1.1
+    attribute authority. This is the surface that federates SJTU into CARSI, the Chinese national
+    research-and-education federation, which has been a full eduGAIN member since 2019 — so an SJTU
+    login reaches licensed resources internationally through this one entity. Identity federation is
+    institution-operated by definition, it is machine-readable, and it is almost never catalogued;
+    it is also the strongest education-regime conformance signal SJTU has. Fetched and saved
+    2026-08-30.
+  humanURL: https://jaccount.sjtu.edu.cn/idp/shibboleth
+  baseURL: https://jaccount.sjtu.edu.cn/idp
+  tags:
+  - Identity Federation
+  - SAML
+  - Shibboleth
+  - Single Sign-On
+  - CARSI
+  - eduGAIN
+  properties:
+  - type: IdentityFederation
+    url: https://jaccount.sjtu.edu.cn/idp/shibboleth
+  - type: WellKnown
+    url: well-known/shanghai-jiao-tong-university-saml-idp-metadata.xml
+  - type: Authentication
+    url: authentication/shanghai-jiao-tong-university-authentication.yml
+  - type: Conformance
+    url: conformance/shanghai-jiao-tong-university-conformance.yml
+- aid: shanghai-jiao-tong-university:jiaowoban
+  name: Jiao Wo Ban (交我办) Process Platform
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/shanghai-jiao-tong-university.png
+  x-operator: institution
+  description: >-
+    SJTU's campus super-app and the low-code process platform behind it, on which the university and
+    approved third parties build workflow applications for staff and students. The developer portal
+    ships a full first-party developer programme for it — platform introduction, development
+    standards, a guide covering form design, field and repeat controls, mobile views, print
+    templates, master-detail structures, workflow modelling, permissions, notifications, dynamic
+    formulas, styles, validation and scripts, a Messenger event model, a JsSdk, IFrame control
+    development, parent/child processes and export. It is also the registration surface for every
+    other SJTU API: applications are submitted here or at my.sjtu.edu.cn under Service Hall ->
+    Information Services -> jAccount interface application. No REST contract is published for the
+    platform itself, so no specification is asserted; IDE access is granted by the Network and
+    Information Center on request against a named jAccount.
+  humanURL: https://developer.sjtu.edu.cn/form/guide/introduce.html
+  baseURL: https://my.sjtu.edu.cn/
+  tags:
+  - Campus Life
+  - Workflow
+  - Low Code
+  - Mobile
   properties:
   - type: Documentation
-    url: https://developer.sjtu.edu.cn/graphql/graphql.html
-  - type: Documentation
-    url: https://developer.sjtu.edu.cn/api/list.html
-  - url: graphql/shanghai-jiao-tong-university-graphql.md
-    type: GraphQL
-- aid: shanghai-jiao-tong-university:graphql-student
-  name: Undergraduate Teaching APIs
-  description: >-
-    GraphQL APIs exposing undergraduate teaching and course-related information.
-    Course interfaces return current academic year data. Part of the gated data
-    resources platform.
-  humanURL: https://developer.sjtu.edu.cn/graphql/student.html
-  tags: [GraphQL, Teaching, Courses, Academic]
-  properties:
-  - type: Documentation
-    url: https://developer.sjtu.edu.cn/graphql/student.html
-- aid: shanghai-jiao-tong-university:graphql-faculty
-  name: Faculty APIs
-  description: >-
-    GraphQL APIs providing faculty and staff profile data. Part of the gated data
-    resources platform requiring an approved application.
-  humanURL: https://developer.sjtu.edu.cn/graphql/faculty.html
-  tags: [GraphQL, Faculty, Data]
-  properties:
-  - type: Documentation
-    url: https://developer.sjtu.edu.cn/graphql/faculty.html
-- aid: shanghai-jiao-tong-university:graphql-paper
-  name: Academic Paper APIs
-  description: >-
-    GraphQL APIs providing access to academic paper and publication metadata.
-    Part of the gated data resources platform requiring an approved application.
-  humanURL: https://developer.sjtu.edu.cn/graphql/paper.html
-  tags: [GraphQL, Papers, Publications, Research]
-  properties:
-  - type: Documentation
-    url: https://developer.sjtu.edu.cn/graphql/paper.html
-- aid: shanghai-jiao-tong-university:graphql-account
-  name: Account APIs
-  description: >-
-    GraphQL APIs used to retrieve account-related information. Access requires an
-    approved data resource application.
-  humanURL: https://developer.sjtu.edu.cn/graphql/account.html
-  tags: [GraphQL, Account, Identity, Data]
-  properties:
-  - type: Documentation
-    url: https://developer.sjtu.edu.cn/graphql/account.html
+    url: https://developer.sjtu.edu.cn/form/guide/introduce.html
+  - type: Conventions
+    url: https://developer.sjtu.edu.cn/form/standard/desktop.html
+  - type: SignUp
+    url: https://my.sjtu.edu.cn/
 common:
-- type: DomainSecurity
-  url: security/shanghai-jiao-tong-university-domain-security.yml
 - type: Website
   url: https://en.sjtu.edu.cn/
+- type: About
+  url: https://www.sjtu.edu.cn/
 - type: DeveloperPortal
   url: https://developer.sjtu.edu.cn/
+- type: Documentation
+  url: https://developer.sjtu.edu.cn/api/overview.html
+- type: APIReference
+  url: https://developer.sjtu.edu.cn/api/list.html
 - type: Authentication
-  url: https://developer.sjtu.edu.cn/auth/oidc.html
-- type: GitHub
+  url: https://developer.sjtu.edu.cn/auth/oauth.html
+- type: OAuthScopes
+  url: scopes/shanghai-jiao-tong-university-scopes.yml
+- type: SDKs
+  url: https://developer.sjtu.edu.cn/api/sdk.html
+- type: SignUp
+  url: https://my.sjtu.edu.cn/
+- type: IdentityFederation
+  url: https://jaccount.sjtu.edu.cn/idp/shibboleth
+- type: ResearchComputing
+  url: https://docs.hpc.sjtu.edu.cn/
+- type: LibraryCatalog
+  url: https://www.lib.sjtu.edu.cn/
+- type: ResearchRepository
+  url: https://scholar.sjtu.edu.cn/
+  x-operator: institution
+  x-note: >-
+    SJTU's institutional knowledge repository (机构知识库), run by the university library. DNS resolves
+    to 202.120.35.143, in the same SJTU block as hpc and graphql, and TLS completes — but no HTTP
+    response is returned to a caller outside China, so we could not read it and could not probe it
+    for OAI-PMH. Recorded as an unverified institution-operated surface, not as a live one.
+- type: AIPolicy
+  url: https://www.sjtu.edu.cn/tg/20250304/207682.html
+  x-note: >-
+    《上海交通大学关于在教育教学中使用AI的规范》(试行版) — SJTU's trial regulation on the use of AI in
+    education and teaching, published 2025-03-04 by the university's AI+HI working group. Covers
+    scenario analysis, design and development, deployment, evaluation, maintenance and governance
+    across the AI-in-teaching lifecycle.
+- type: AITooling
+  url: https://ctld.sjtu.edu.cn/teaching/page/203
+  x-note: >-
+    The Center for Teaching and Learning Development's AI teaching-application guidance, including
+    the generative-AI teacher guide (2023) and the guide for regulating student use of AI tools.
+- type: Blog
+  url: https://news.sjtu.edu.cn/
+- type: GitHubOrganization
   url: https://github.com/sjtug
+  x-operator: tenant
+  x-note: >-
+    SJTUG is the SJTU *nix User Group — a STUDENT organisation with its own domain (sjtug.org), not
+    the university's engineering org. SJTU operates no official GitHub organisation and publishes no
+    source for any of the platforms above. Recorded as tenant so the institution is not credited
+    with a student club's engineering.
 - type: LinkedIn
   url: https://www.linkedin.com/school/shanghai-jiao-tong-university/
+- type: DomainSecurity
+  url: security/shanghai-jiao-tong-university-domain-security.yml
 - type: Plans
   url: plans/shanghai-jiao-tong-university-plans-pricing.yml
 - type: RateLimits
   url: rate-limits/shanghai-jiao-tong-university-rate-limits.yml
 - type: FinOps
   url: finops/shanghai-jiao-tong-university-finops.yml
+- type: WellKnown
+  url: well-known/shanghai-jiao-tong-university-well-known.yml
+- type: Conformance
+  url: conformance/shanghai-jiao-tong-university-conformance.yml
+- type: Vocabulary
+  url: vocabulary/shanghai-jiao-tong-university-vocabulary.yml
+- type: JSONLD
+  url: json-ld/shanghai-jiao-tong-university-context.jsonld
 - type: Review
   url: review.yml
+x-coverage:
+  state: covered
+  reason: covered
+  generated: '2026-08-30'
+  method: probed
+  detail: >-
+    Shanghai Jiao Tong University is one of the rare institutions in this cohort where the answer to
+    "who operates this?" is the institution itself, on every surface. All five recorded surfaces sit
+    under sjtu.edu.cn, all five are run by the university's Network and Information Center, and not
+    one is a vendor tenancy — there is no Figshare, no Elsevier Pure, no Ex Libris, no Dataverse and
+    no Symplectic contract in this repo to remove. The audit's six institution verdicts and zero
+    tenant verdicts were correct; what the June 2026 profile got wrong was scope and currency, not
+    ownership.
+
+    Three corrections landed on 2026-08-30. First, the entire Open API platform at api.sjtu.edu.cn —
+    59 operations across 13 families, a 39-scope OAuth registry, a documented error table and a
+    published set of design rules — was missing from the profile altogether. Second, the Data
+    Resources API had migrated from GraphQL to REST with no Sunset header, no changelog and no dated
+    signal of any kind, and the profile still described the superseded GraphQL endpoint; it had also
+    gained a fifth data category (资产类, assets). Third, the profile split one gated data platform
+    into five apis[] entries by category, which is the same footprint-inflation pattern that vendor
+    tag-splitting produces; those are collapsed into one surface here.
+
+    Two genuinely new finds. SJTU publishes OpenID Connect provider metadata at
+    /oauth2/.well-known/openid-configuration — served at the issuer-relative path, not the host root,
+    which is why a conventional probe never saw it — and Shibboleth SAML 2.0 identity-provider
+    metadata at /idp/shibboleth, federating the university into CARSI and, through it, eduGAIN.
+    Identity federation is institution-operated by definition and almost never catalogued; it is the
+    strongest education-regime conformance evidence in this repo.
+
+    What SJTU does not publish is recorded as plainly as what it does. No OpenAPI on any host, no
+    changelog, no status page, no deprecation or versioning policy, no security.txt, no llms.txt, no
+    agent card, no api-catalog, no self-service signup, and no public source. The documentation
+    exists only in Chinese. The scholarly gap is the widest: the Paper API carries `doi` and `wos`
+    as opaque strings but conforms to neither Crossref, DataCite nor ORCID, and no OAI-PMH endpoint
+    could be reached anywhere on sjtu.edu.cn. Two surfaces could not be read from outside China —
+    graphql.sjtu.edu.cn is campus-network restricted by design and 302s to restrict.sjtu.edu.cn,
+    which is a finding about SJTU; scholar.sjtu.edu.cn completes TLS and then returns nothing, which
+    is a finding about our vantage and is marked unverified rather than dead.
+  evidence:
+  - url: https://developer.sjtu.edu.cn/
+    status: 200
+    note: Institution-operated developer portal, four sections.
+  - url: https://developer.sjtu.edu.cn/api/list.html
+    status: 200
+    note: Full Open API index — 13 families, source for the derived OpenAPI.
+  - url: https://api.sjtu.edu.cn/v1/me/profile
+    status: 403
+    note: '{"errno":10002,"error":"Authentication Failed.","total":0} — live OAuth-protected gateway.'
+  - url: https://api.sjtu.edu.cn/
+    status: 0
+    note: Empty reply. The gateway answers only under /v1 and /v2.
+  - url: https://jaccount.sjtu.edu.cn/oauth2/authorize
+    status: 400
+    note: '{"error":"invalid_request","error_description":"Missing response_type parameter value"} — correct RFC 6749 error.'
+  - url: https://jaccount.sjtu.edu.cn/oauth2/.well-known/openid-configuration
+    status: 200
+    note: OIDC provider metadata. Issuer-relative path; the host root returns 404.
+  - url: https://jaccount.sjtu.edu.cn/.well-known/openid-configuration
+    status: 404
+    note: Why the discovery document was missed before.
+  - url: https://jaccount.sjtu.edu.cn/idp/shibboleth
+    status: 200
+    note: Shibboleth SAML 2.0 IdP metadata, application/xml, 11,975 bytes.
+  - url: https://graphql.sjtu.edu.cn/v1/account/info
+    status: 302
+    note: Redirects to https://restrict.sjtu.edu.cn/ — campus-network restriction, not a dead host.
+  - url: https://developer.sjtu.edu.cn/graphql/asset.html
+    status: 200
+    note: The fifth data category, absent from the 2026-06-03 profile.
+  - url: https://scholar.sjtu.edu.cn/
+    status: 0
+    note: Institutional repository. DNS resolves and TLS completes; no HTTP response from outside China.
+  - url: https://ir.lib.sjtu.edu.cn/
+    status: 0
+    note: CNAMEs to tpi.lib.sjtu.edu.cn, which has no A record. Dead.
+  - url: https://mirrors.sjtu.edu.cn/
+    status: 0
+    note: Does not resolve. The SJTUG mirror service is not reachable at this name.
+  - url: https://data.sjtu.edu.cn/
+    status: 0
+    note: Does not resolve. SJTU operates no open-data portal at the conventional name.
+  - url: https://docs.hpc.sjtu.edu.cn/
+    status: 200
+    note: 交我算 HPC platform user manual. Institution-operated research computing; no API contract published.
+  - url: https://developer.sjtu.edu.cn/llms.txt
+    status: 404
+  - url: https://developer.sjtu.edu.cn/openapi.json
+    status: 404
+  - url: https://developer.sjtu.edu.cn/.well-known/api-catalog
+    status: 404
+  - url: https://www.sjtu.edu.cn/.well-known/security.txt
+    status: 404
+  - url: https://www.sjtu.edu.cn/tg/20250304/207682.html
+    status: 200
+    note: SJTU's trial regulation on the use of AI in education and teaching.
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

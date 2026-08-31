@@ -1,7 +1,15 @@
 {
   "repo": "shanghai-jiao-tong-university",
-  "feeds": [],
+  "feeds": [
+    {
+      "source": "https://ctld.sjtu.edu.cn/teaching/page/203",
+      "feed_url": "https://ctld.sjtu.edu.cn/teaching/page/203",
+      "title": "",
+      "saved": 0,
+      "method": "none"
+    }
+  ],
   "post_count": 0,
-  "fetched": "2026-07-04T13:16:16Z",
+  "fetched": "2026-08-30T22:33:40Z",
   "note": "no Blog/RSS-typed url in apis.yml this run"
 }
