@@ -55,6 +55,22 @@ tags:
 - Course Catalog
 - Research Computing
 - Campus Life
+- Authentication
+- OpenID Connect
+- SAML
+- Shibboleth
+- Payments
+tags_raw:
+- University
+- Higher Education
+- Education
+- Research
+- China
+- C9 League
+- Identity Federation
+- Course Catalog
+- Research Computing
+- Campus Life
 - OAuth
 - OpenID Connect
 - SAML
@@ -174,6 +190,11 @@ apis:
   - Identity
   - Authentication
   - OpenID Connect
+  - SSO
+  tags_raw:
+  - Identity
+  - Authentication
+  - OpenID Connect
   - OAuth
   - SSO
   properties:
@@ -245,6 +266,11 @@ apis:
   humanURL: https://developer.sjtu.edu.cn/form/guide/introduce.html
   baseURL: https://my.sjtu.edu.cn/
   tags:
+  - Campus Life
+  - Workflows
+  - Low-Code
+  - Mobile
+  tags_raw:
   - Campus Life
   - Workflow
   - Low Code
