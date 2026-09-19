@@ -146,6 +146,13 @@ apis:
   - Identity Federation
   - SAML
   - Shibboleth
+  - SSO
+  - CARSI
+  - eduGAIN
+  tags_raw:
+  - Identity Federation
+  - SAML
+  - Shibboleth
   - Single Sign-On
   - CARSI
   - eduGAIN
@@ -287,6 +294,8 @@ apis:
   humanURL: https://developer.sjtu.edu.cn/api/overview.html
   baseURL: https://api.sjtu.edu.cn
   tags:
+  - Barcodes
+  tags_raw:
   - Barcode
   properties:
   - type: OpenAPI
@@ -372,6 +381,8 @@ apis:
   humanURL: https://developer.sjtu.edu.cn/api/overview.html
   baseURL: https://api.sjtu.edu.cn
   tags:
+  - Cards
+  tags_raw:
   - Card
   properties:
   - type: OpenAPI
@@ -757,6 +768,8 @@ apis:
   humanURL: https://developer.sjtu.edu.cn/api/overview.html
   baseURL: https://api.sjtu.edu.cn
   tags:
+  - Profiles
+  tags_raw:
   - Profile
   properties:
   - type: OpenAPI
