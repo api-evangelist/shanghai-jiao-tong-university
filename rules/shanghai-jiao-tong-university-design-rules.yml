@@ -1,0 +1,107 @@
+# authorship: derived by API Evangelist from SJTU's own published API design rules.
+x-method: derived
+generated: '2026-08-30'
+source: https://developer.sjtu.edu.cn/api/overview.html
+x-operator: institution
+note: >-
+  These are SJTU's OWN stated API design rules, read off the 总体设计 and 构造请求 sections of its
+  developer portal and restated as checkable assertions. They are unusual in that a university
+  published them at all — and unusual again in that two of them contradict the specifications they
+  cite. Both contradictions are recorded rather than smoothed over.
+rules:
+- id: rest-style
+  statement: All APIs use REST style.
+  source_text: 所有API使用RESTful Style
+  severity: info
+- id: verb-set
+  statement: >-
+    The platform states that only GET, PUT, UPDATE and DELETE are used — but the request-method
+    table on the same page documents GET, PUT, POST and DELETE, and every documented operation uses
+    POST rather than UPDATE. UPDATE is not an HTTP method. Treat the four-verb set as GET, PUT,
+    POST, DELETE.
+  source_text: REST的动词仅使用 GET / PUT / UPDATE / DELETE 四种
+  severity: warn
+  finding: >-
+    A stated rule that does not match the platform's own documentation. An agent reading the prose
+    would look for an UPDATE verb that does not exist.
+- id: put-creates-post-updates
+  statement: >-
+    SJTU inverts the common convention: PUT means "create the specified resource" and POST means
+    "update the specified resource or perform a specific operation". Every documented operation
+    follows this — PUT /v1/file uploads, PUT /v1/notification sends, PUT /v1/me/card opens an
+    account; POST /v1/file/{id}/meta updates.
+  source_text: PUT 请求服务器新增指定资源 / POST 请求服务器更新指定资源或者执行特定操作
+  severity: warn
+  finding: >-
+    The most important integration rule on the platform and the one most likely to be got wrong by
+    a client generated from convention rather than from the documentation.
+- id: method-override
+  statement: >-
+    A `method` query parameter overrides the HTTP verb and takes priority over the protocol. The
+    parameter is case-sensitive.
+  source_text: 通过method参数给出的动词拥有比HTTP协议更高的优先级，method参数大小敏感
+  severity: warn
+  finding: >-
+    A verb-tunnelling override on a platform that also authenticates by query parameter. Worth an
+    integrator's and a security reviewer's attention.
+- id: camel-case-naming
+  statement: All naming uses camelCase, with the sole exception of access_token.
+  source_text: 所有Naming采用 Camel命名法，access_token除外
+  severity: info
+- id: case-sensitive
+  statement: URLs and parameters are case-sensitive.
+  source_text: Url和参数 Case sensitive/大小写敏感
+  severity: info
+- id: json-default
+  statement: >-
+    Request bodies default to application/json unless stated otherwise, and Chinese characters in a
+    body must be UTF-8 encoded.
+  severity: info
+- id: guid-identifiers
+  statement: >-
+    Object ids are GUIDs, except that a canvas.profile also carries an `account` string, and some
+    externally-sourced structures keep their own primary-key type.
+  severity: info
+- id: kind-and-uri
+  statement: Every object carries a `kind` that uniquely identifies its type and a `uri` giving its web address.
+  severity: info
+- id: unix-timestamps
+  statement: All time values are longs — Unix timestamps in seconds since 1970-01-01 UTC.
+  severity: info
+- id: envelope-required
+  statement: >-
+    Every response uses the common envelope: errno (0 on success), optional error, optional total
+    and nextToken when paging, and entities[] carrying the payload.
+  severity: error
+- id: errno-is-authoritative
+  statement: >-
+    Success MUST be judged from errno, not from the HTTP status. The platform's own example shows a
+    failed notification returning HTTP 200 with errno 10001.
+  severity: error
+  finding: >-
+    Derived from the documentation's own example rather than stated as a rule. It is the single
+    most consequential undocumented rule on the platform.
+- id: paging
+  statement: >-
+    Open API paging uses limit (default 100) with either start (an index) or pageToken; when both
+    are given, pageToken is ignored. The next page's token is returned as nextToken, and its absence
+    means the last page has been reached. Data Resources paging is different — first (start
+    position, default 1) and offset (page size, max 200).
+  severity: warn
+  finding: >-
+    The two SJTU platforms page differently and use the word `offset` to mean different things.
+    On the Open API `start` is the index; on Data Resources `offset` is the page size.
+- id: statistics-parameters
+  statement: >-
+    Statistics operations take filters (comma-separated conditions using >, <, >=, <=, =, !=, with
+    = and != accepting multiple colon-separated values for IN and NOT IN), dimensions (the analysis
+    axes) and fields (aggregations — Count, Sum, Avg, Min, Max).
+  severity: info
+- id: token-placement
+  statement: >-
+    An access token may be sent as the access_token query or body parameter, or as
+    Authorization: Bearer {token} per RFC 6750.
+  severity: warn
+  finding: >-
+    Query-string tokens are documented first and used in most of the platform's own examples. Tokens
+    in URLs are logged by every intermediary; the header form should be preferred.

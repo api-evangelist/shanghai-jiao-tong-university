@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EntityDescriptor  xmlns="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:shibmd="urn:mace:shibboleth:metadata:1.0" xmlns:xml="http://www.w3.org/XML/1998/namespace" xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui" entityID="https://jaccount.sjtu.edu.cn/idp/shibboleth">
+
+    <IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
+
+        <Extensions>
+            <shibmd:Scope regexp="false">sjtu.edu.cn</shibmd:Scope>
+            <mdui:UIInfo>
+                <mdui:DisplayName xml:lang="en">SJTU Identity Provider</mdui:DisplayName>
+                <mdui:Description xml:lang="en"></mdui:Description>
+                <mdui:Logo height="80" width="80">https://jaccount.sjtu.edu.cn/idp/images/logo.png</mdui:Logo>
+            </mdui:UIInfo>
+        </Extensions>
+
+        <KeyDescriptor use="signing">
+            <ds:KeyInfo>
+                    <ds:X509Data>
+                        <ds:X509Certificate>
+MIIDPDCCAiSgAwIBAgIVAOANnyCm0t4VCrhArx55ERbTDqfWMA0GCSqGSIb3DQEB
+CwUAMB8xHTAbBgNVBAMMFGphY2NvdW50LnNqdHUuZWR1LmNuMB4XDTE2MTAwMTE1
+MDUyNloXDTM2MTAwMTE1MDUyNlowHzEdMBsGA1UEAwwUamFjY291bnQuc2p0dS5l
+ZHUuY24wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCa1UNk8KJBsrzH
+nJEpsTLsUaFjbsJF7Bgu6Ssx9XJcEbHlFhxE6qZsNDzpsnV1bX2secElMq9qNNct
+aYS4qzJ8QkWs1ruOjuZo90fEMGqAeagElGnzT+NRhYUfk2Kt1r58rbFiood13Xoj
+FgULuUmpAUX0UNxMzUAnSJceB3uVdp86GWwDtHdI2lh9D2T4wS/OPnQXbDyfNKMh
+1QAvI7k9ZoHaYNuht3I8J9zs/XXh51bMHVXmUeki0msueF4fIVq2c3tf4DRAi4g4
+sQdeycFhRhfMOkgqwg6jQj95/hHfI2soRopwZhJSE9YkC6GEZswlMZlD/9suEUum
+Wj9yC0zVAgMBAAGjbzBtMB0GA1UdDgQWBBRThSuEAmqnrBcFPghzVxevOaSsPTBM
+BgNVHREERTBDghRqYWNjb3VudC5zanR1LmVkdS5jboYraHR0cHM6Ly9qYWNjb3Vu
+dC5zanR1LmVkdS5jbi9pZHAvc2hpYmJvbGV0aDANBgkqhkiG9w0BAQsFAAOCAQEA
+TsjCAl2Xc4nsDAl49hH3n90rMUmhlLThQ7myEDbuei64jA+4svoLHkFdth9GW1/T
+Ad8uxeWaWRhZMlMd03OkG5XOf1cXXHKlFXfAbJJPGtInGSz9S5Gs5ED7JG/MRAR3
+eeunFN0O83153sECbFLSWXkrVEhD30G7lTicOKGljM/SUZlXgAZhV8fmgSYztQU8
+13xbdeXQhr3keCKDjX67W6U3mzXHxSpn+iuCsS8Mog8vS8xgf39mDVKsI9xLEtUr
+qjWeWMz9KrjAVNpyPwi0zNC/YUiSWKEHB69+pNNagyWskiK0p1E9/pIUwSwkdWlQ
+MXg3GGcMdRX4W5UnwKIV1w==
+                        </ds:X509Certificate>
+                    </ds:X509Data>
+            </ds:KeyInfo>
+
+        </KeyDescriptor>
+        <KeyDescriptor use="signing">
+            <ds:KeyInfo>
+                    <ds:X509Data>
+                        <ds:X509Certificate>
+MIIDPDCCAiSgAwIBAgIVALNA50HO6b+lsrik2jRStIxfIQh8MA0GCSqGSIb3DQEB
+CwUAMB8xHTAbBgNVBAMMFGphY2NvdW50LnNqdHUuZWR1LmNuMB4XDTE2MTAwMTE1
+MDUyNVoXDTM2MTAwMTE1MDUyNVowHzEdMBsGA1UEAwwUamFjY291bnQuc2p0dS5l
+ZHUuY24wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDBjrSjmClOPvBr
+BH89sHFR/0sLB0p2rLLVOEsSidazoFmspePA6Cbv7s7qCVY99eFBG1mIR8LOsXO+
+opbfbNE7bdjv4cDf0K43gbeAezlNe9peIkVTsx97Io7pRjzoYAbpWXb5CfP58HdY
+UzJLZvg9iUkmYhJzSZVOgOad1yM5rt3dZaM/c2poW2VGWUWrHDy+t8FHjbClVF7i
+nINbzzG4I9mNAwUIkJfRjb207c/E0Vr4yr9ZYkP+IEaWixvVaVGfMIXWiZmv0/eV
+3Mxx2QuISbNOSIj3sk5gkrD3kH5pm2YD8fygVWfSorniHK6oXFK3ze1d0BhZY7dM
+J//jQdsJAgMBAAGjbzBtMB0GA1UdDgQWBBQs8SkRJZgasHY8ykMHN0m9DpssdTBM
+BgNVHREERTBDghRqYWNjb3VudC5zanR1LmVkdS5jboYraHR0cHM6Ly9qYWNjb3Vu
+dC5zanR1LmVkdS5jbi9pZHAvc2hpYmJvbGV0aDANBgkqhkiG9w0BAQsFAAOCAQEA
+s2C5U1iBhgEOsU7MinY9+DZW6fCmPbpYT0Onb5LVQkooC/N1Q6TfFSIFWi++sq4P
+Rs7kb5Ygavz7jq+EZ/Q4mTcZTVXdpvN8cjK0djQPDP90MPbG2ql7G4CNAEnZ+mVQ
+efgshKjmVb94o4ifczLTu5Ticj+NF4zy0HGRLtE37FtoqK58nBbuLSTJMRaJqCoS
+ahayYCYzISMC8QLWN5CL9d1m82BNMb++sID6t9ijRmfiQzpss73+EzS548DI9j0K
+IZ3zRp50obKvH6hlDEiI2LyCgPlFTrRtPkYpITSusIWobt35RU8j3Pm3EpsHV7Hk
+P1fIR5skwbi77+91psoigg==
+                        </ds:X509Certificate>
+                    </ds:X509Data>
+            </ds:KeyInfo>
+
+        </KeyDescriptor>
+        <KeyDescriptor use="encryption">
+            <ds:KeyInfo>
+                    <ds:X509Data>
+                        <ds:X509Certificate>
+MIIDPDCCAiSgAwIBAgIVAJ2VAeGQe5I5CsDi+efaCvS0QLWkMA0GCSqGSIb3DQEB
+CwUAMB8xHTAbBgNVBAMMFGphY2NvdW50LnNqdHUuZWR1LmNuMB4XDTE2MTAwMTE1
+MDUyNVoXDTM2MTAwMTE1MDUyNVowHzEdMBsGA1UEAwwUamFjY291bnQuc2p0dS5l
+ZHUuY24wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCo3+VDAJ9JI0rh
+BiNVsHHuy2am0Pq+nm4uYSJ3fBmW22/q7faR2N8tGcpq6d+OftNZFFp/her1K4BT
+YkemD5aFr2eaBSyu9fKWJsJkClJK72RVdmWiYv8pQmNnMahKBLdN51dVUqGUK3Ed
+ZkEAw1xqItZxQBWPSNXrkoN7rd6++KJ1c3UXOu70m5t77k91Ky4Z9aosplZM6Moz
+5lBUwXPkbsm6xHA018hOa8qVqzxXUu1fNC/iuo8LiBC5LDbRlr77MoY+N1Aq7L3S
+jAUEag6Id+rcSFTeylRQGEwKQOTczmu5xCpcZNqjm2OZcOqHlM42amDYygdBn5Ju
+IKPRSwgLAgMBAAGjbzBtMB0GA1UdDgQWBBSscAxwYa+WgY19mLfYN2ObO5oU9zBM
+BgNVHREERTBDghRqYWNjb3VudC5zanR1LmVkdS5jboYraHR0cHM6Ly9qYWNjb3Vu
+dC5zanR1LmVkdS5jbi9pZHAvc2hpYmJvbGV0aDANBgkqhkiG9w0BAQsFAAOCAQEA
+fysmI2kjCoAu7N0KA7fu3eTki5Lrj29PES4HGkKH3nke4AE5hxq+GphJXB4leEsC
+bY9f78TD0C+GMzFJhcqVTutKzazo6i4ZbyWnPCaQeRKY84yYQQwpeg9xIE7qHTJH
+GkE7STNAAV4SccfYo6cHIYPnW2Dsh6NdCTUtcSzZFgzcwBtRPjNIABLvmoII9wlJ
+JBKZdyugL05+c0pXvAUlvDsv/9maNzZal65KSvuF8LrBrFdPoS9uqQ1FwO7CUxag
+XigsuaQm+RLoxApHBJluTz/YbNY2EmZFWsvaJ0WsGj9iLYNjJZSQB8cXcyqwhlNf
+BxwT3TLfYaADn74yZXaV7g==
+                        </ds:X509Certificate>
+                    </ds:X509Data>
+            </ds:KeyInfo>
+
+        </KeyDescriptor>
+
+        <ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://jaccount.sjtu.edu.cn/idp/profile/SAML1/SOAP/ArtifactResolution" index="1"/>
+        <ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://jaccount.sjtu.edu.cn/idp/profile/SAML2/SOAP/ArtifactResolution" index="2"/>
+
+        <SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://jaccount.sjtu.edu.cn/idp/profile/SAML2/Redirect/SLO"/>
+        <SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://jaccount.sjtu.edu.cn/idp/profile/SAML2/POST/SLO"/>
+        <SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://jaccount.sjtu.edu.cn/idp/profile/SAML2/POST-SimpleSign/SLO"/>
+        <SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://jaccount.sjtu.edu.cn/idp/profile/SAML2/SOAP/SLO"/>
+
+        <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+        <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+
+        <SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://jaccount.sjtu.edu.cn/idp/profile/Shibboleth/SSO"/>
+        <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://jaccount.sjtu.edu.cn/idp/profile/SAML2/POST/SSO"/>
+        <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://jaccount.sjtu.edu.cn/idp/profile/SAML2/POST-SimpleSign/SSO"/>
+        <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://jaccount.sjtu.edu.cn/idp/profile/SAML2/Redirect/SSO"/>
+
+    </IDPSSODescriptor>
+
+
+    <AttributeAuthorityDescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:1.1:protocol">
+
+        <Extensions>
+            <shibmd:Scope regexp="false">sjtu.edu.cn</shibmd:Scope>
+        </Extensions>
+
+        <KeyDescriptor use="signing">
+            <ds:KeyInfo>
+                    <ds:X509Data>
+                        <ds:X509Certificate>
+MIIDPDCCAiSgAwIBAgIVAOANnyCm0t4VCrhArx55ERbTDqfWMA0GCSqGSIb3DQEB
+CwUAMB8xHTAbBgNVBAMMFGphY2NvdW50LnNqdHUuZWR1LmNuMB4XDTE2MTAwMTE1
+MDUyNloXDTM2MTAwMTE1MDUyNlowHzEdMBsGA1UEAwwUamFjY291bnQuc2p0dS5l
+ZHUuY24wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCa1UNk8KJBsrzH
+nJEpsTLsUaFjbsJF7Bgu6Ssx9XJcEbHlFhxE6qZsNDzpsnV1bX2secElMq9qNNct
+aYS4qzJ8QkWs1ruOjuZo90fEMGqAeagElGnzT+NRhYUfk2Kt1r58rbFiood13Xoj
+FgULuUmpAUX0UNxMzUAnSJceB3uVdp86GWwDtHdI2lh9D2T4wS/OPnQXbDyfNKMh
+1QAvI7k9ZoHaYNuht3I8J9zs/XXh51bMHVXmUeki0msueF4fIVq2c3tf4DRAi4g4
+sQdeycFhRhfMOkgqwg6jQj95/hHfI2soRopwZhJSE9YkC6GEZswlMZlD/9suEUum
+Wj9yC0zVAgMBAAGjbzBtMB0GA1UdDgQWBBRThSuEAmqnrBcFPghzVxevOaSsPTBM
+BgNVHREERTBDghRqYWNjb3VudC5zanR1LmVkdS5jboYraHR0cHM6Ly9qYWNjb3Vu
+dC5zanR1LmVkdS5jbi9pZHAvc2hpYmJvbGV0aDANBgkqhkiG9w0BAQsFAAOCAQEA
+TsjCAl2Xc4nsDAl49hH3n90rMUmhlLThQ7myEDbuei64jA+4svoLHkFdth9GW1/T
+Ad8uxeWaWRhZMlMd03OkG5XOf1cXXHKlFXfAbJJPGtInGSz9S5Gs5ED7JG/MRAR3
+eeunFN0O83153sECbFLSWXkrVEhD30G7lTicOKGljM/SUZlXgAZhV8fmgSYztQU8
+13xbdeXQhr3keCKDjX67W6U3mzXHxSpn+iuCsS8Mog8vS8xgf39mDVKsI9xLEtUr
+qjWeWMz9KrjAVNpyPwi0zNC/YUiSWKEHB69+pNNagyWskiK0p1E9/pIUwSwkdWlQ
+MXg3GGcMdRX4W5UnwKIV1w==
+                        </ds:X509Certificate>
+                    </ds:X509Data>
+            </ds:KeyInfo>
+
+        </KeyDescriptor>
+        <KeyDescriptor use="signing">
+            <ds:KeyInfo>
+                    <ds:X509Data>
+                        <ds:X509Certificate>
+MIIDPDCCAiSgAwIBAgIVALNA50HO6b+lsrik2jRStIxfIQh8MA0GCSqGSIb3DQEB
+CwUAMB8xHTAbBgNVBAMMFGphY2NvdW50LnNqdHUuZWR1LmNuMB4XDTE2MTAwMTE1
+MDUyNVoXDTM2MTAwMTE1MDUyNVowHzEdMBsGA1UEAwwUamFjY291bnQuc2p0dS5l
+ZHUuY24wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDBjrSjmClOPvBr
+BH89sHFR/0sLB0p2rLLVOEsSidazoFmspePA6Cbv7s7qCVY99eFBG1mIR8LOsXO+
+opbfbNE7bdjv4cDf0K43gbeAezlNe9peIkVTsx97Io7pRjzoYAbpWXb5CfP58HdY
+UzJLZvg9iUkmYhJzSZVOgOad1yM5rt3dZaM/c2poW2VGWUWrHDy+t8FHjbClVF7i
+nINbzzG4I9mNAwUIkJfRjb207c/E0Vr4yr9ZYkP+IEaWixvVaVGfMIXWiZmv0/eV
+3Mxx2QuISbNOSIj3sk5gkrD3kH5pm2YD8fygVWfSorniHK6oXFK3ze1d0BhZY7dM
+J//jQdsJAgMBAAGjbzBtMB0GA1UdDgQWBBQs8SkRJZgasHY8ykMHN0m9DpssdTBM
+BgNVHREERTBDghRqYWNjb3VudC5zanR1LmVkdS5jboYraHR0cHM6Ly9qYWNjb3Vu
+dC5zanR1LmVkdS5jbi9pZHAvc2hpYmJvbGV0aDANBgkqhkiG9w0BAQsFAAOCAQEA
+s2C5U1iBhgEOsU7MinY9+DZW6fCmPbpYT0Onb5LVQkooC/N1Q6TfFSIFWi++sq4P
+Rs7kb5Ygavz7jq+EZ/Q4mTcZTVXdpvN8cjK0djQPDP90MPbG2ql7G4CNAEnZ+mVQ
+efgshKjmVb94o4ifczLTu5Ticj+NF4zy0HGRLtE37FtoqK58nBbuLSTJMRaJqCoS
+ahayYCYzISMC8QLWN5CL9d1m82BNMb++sID6t9ijRmfiQzpss73+EzS548DI9j0K
+IZ3zRp50obKvH6hlDEiI2LyCgPlFTrRtPkYpITSusIWobt35RU8j3Pm3EpsHV7Hk
+P1fIR5skwbi77+91psoigg==
+                        </ds:X509Certificate>
+                    </ds:X509Data>
+            </ds:KeyInfo>
+
+        </KeyDescriptor>
+        <KeyDescriptor use="encryption">
+            <ds:KeyInfo>
+                    <ds:X509Data>
+                        <ds:X509Certificate>
+MIIDPDCCAiSgAwIBAgIVAJ2VAeGQe5I5CsDi+efaCvS0QLWkMA0GCSqGSIb3DQEB
+CwUAMB8xHTAbBgNVBAMMFGphY2NvdW50LnNqdHUuZWR1LmNuMB4XDTE2MTAwMTE1
+MDUyNVoXDTM2MTAwMTE1MDUyNVowHzEdMBsGA1UEAwwUamFjY291bnQuc2p0dS5l
+ZHUuY24wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCo3+VDAJ9JI0rh
+BiNVsHHuy2am0Pq+nm4uYSJ3fBmW22/q7faR2N8tGcpq6d+OftNZFFp/her1K4BT
+YkemD5aFr2eaBSyu9fKWJsJkClJK72RVdmWiYv8pQmNnMahKBLdN51dVUqGUK3Ed
+ZkEAw1xqItZxQBWPSNXrkoN7rd6++KJ1c3UXOu70m5t77k91Ky4Z9aosplZM6Moz
+5lBUwXPkbsm6xHA018hOa8qVqzxXUu1fNC/iuo8LiBC5LDbRlr77MoY+N1Aq7L3S
+jAUEag6Id+rcSFTeylRQGEwKQOTczmu5xCpcZNqjm2OZcOqHlM42amDYygdBn5Ju
+IKPRSwgLAgMBAAGjbzBtMB0GA1UdDgQWBBSscAxwYa+WgY19mLfYN2ObO5oU9zBM
+BgNVHREERTBDghRqYWNjb3VudC5zanR1LmVkdS5jboYraHR0cHM6Ly9qYWNjb3Vu
+dC5zanR1LmVkdS5jbi9pZHAvc2hpYmJvbGV0aDANBgkqhkiG9w0BAQsFAAOCAQEA
+fysmI2kjCoAu7N0KA7fu3eTki5Lrj29PES4HGkKH3nke4AE5hxq+GphJXB4leEsC
+bY9f78TD0C+GMzFJhcqVTutKzazo6i4ZbyWnPCaQeRKY84yYQQwpeg9xIE7qHTJH
+GkE7STNAAV4SccfYo6cHIYPnW2Dsh6NdCTUtcSzZFgzcwBtRPjNIABLvmoII9wlJ
+JBKZdyugL05+c0pXvAUlvDsv/9maNzZal65KSvuF8LrBrFdPoS9uqQ1FwO7CUxag
+XigsuaQm+RLoxApHBJluTz/YbNY2EmZFWsvaJ0WsGj9iLYNjJZSQB8cXcyqwhlNf
+BxwT3TLfYaADn74yZXaV7g==
+                        </ds:X509Certificate>
+                    </ds:X509Data>
+            </ds:KeyInfo>
+
+        </KeyDescriptor>
+
+        <AttributeService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://jaccount.sjtu.edu.cn/idp/profile/SAML1/SOAP/AttributeQuery"/>
+        <!-- <AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://jaccount.sjtu.edu.cn/idp/profile/SAML2/SOAP/AttributeQuery"/> -->
+        <!-- If you uncomment the above you should add urn:oasis:names:tc:SAML:2.0:protocol to the protocolSupportEnumeration above -->
+
+    </AttributeAuthorityDescriptor>
+
+</EntityDescriptor>

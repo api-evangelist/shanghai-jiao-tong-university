@@ -64,7 +64,15 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Shanghai Jiao Tong University (SJTU), founded in 1896 in Shanghai, China, is one of China's leading research universities and is ranked #56 in the QS World University Rankings 2025. This repository catalogs SJTU's public developer and API footprint as an [APIs.json](https://apisjson.org) profile, centered on its official developer platform at [developer.sjtu.edu.cn](https://developer.sjtu.edu.cn/).
+Shanghai Jiao Tong University (上海交通大学, SJTU), founded in 1896 in Shanghai, China, is a C9 League
+public research university. This repository catalogs SJTU's public developer and API footprint as an
+[APIs.json](https://apisjson.org) profile, centered on the university's own developer platform at
+[developer.sjtu.edu.cn](https://developer.sjtu.edu.cn/).
+
+SJTU is unusual in this cohort. Almost every machine-readable surface attributed to a university is a
+vendor's contract running under the institution's name — Figshare, Elsevier Pure, Ex Libris,
+Dataverse. **Nothing in this repository is.** Every host is under `sjtu.edu.cn`, and every contract is
+the university's own engineering, run by its Network and Information Center (网络信息中心).
 
 APIs.json: https://raw.githubusercontent.com/api-evangelist/shanghai-jiao-tong-university/refs/heads/main/apis.yml
 
@@ -73,47 +81,115 @@ Run with Naftiko: https://github.com/naftiko/fleet?utm_source=api-evangelist&utm
 ## Type
 
 - Index
-- Consumer
-- 3rd-Party
+- University — Public Research University
+- Producing
+- 1st-Party
 
 ## Tags
 
-Education, Higher Education, University, Research, China, GraphQL, Identity, OpenID Connect
+University, Higher Education, Education, Research, China, C9 League, Identity Federation, Course
+Catalog, Research Computing, Campus Life, OAuth, OpenID Connect, SAML, Shibboleth, Payments
 
 ## APIs
 
-- **jAccount Single Sign-On (OAuth 2.0 / OIDC)** — SJTU's identity and SSO system providing OAuth 2.0 / OpenID Connect authorization for third-party member sites. Docs: https://developer.sjtu.edu.cn/auth/oidc.html
-- **SJTU Data Resources GraphQL API** — GraphQL data platform (POST to https://graphql.sjtu.edu.cn/graphql) for account, faculty, teaching, and paper data; access by approved application. Docs: https://developer.sjtu.edu.cn/graphql/graphql.html
-- **Undergraduate Teaching APIs** — Course and teaching data (current academic year). Docs: https://developer.sjtu.edu.cn/graphql/student.html
-- **Faculty APIs** — Faculty/staff profile data. Docs: https://developer.sjtu.edu.cn/graphql/faculty.html
-- **Academic Paper APIs** — Publication/paper metadata. Docs: https://developer.sjtu.edu.cn/graphql/paper.html
-- **Account APIs** — Account-related information. Docs: https://developer.sjtu.edu.cn/graphql/account.html
+Every surface below carries `x-operator: institution` — SJTU operates the thing the contract
+describes, not just the data behind it.
 
-## Plans / Rate Limits / FinOps
+- **SJTU Open API** (`https://api.sjtu.edu.cn`) — the university's own REST platform. 59 documented
+  operations across 13 families: Profile, Task, Enterprise, File, Notification, Mail, Finance,
+  Education, Card, Unicode (思源码), Barcode, Calendar, Signature. OAuth 2.0 throughout, one common
+  `errno`/`entities[]` envelope, and field-level scope control — the same Profile call returns a
+  different object shape to a `basic` token than to a `privacy` one.
+  Docs: https://developer.sjtu.edu.cn/api/overview.html
+- **SJTU Data Resources API** (`https://graphql.sjtu.edu.cn/v1`) — institutional data exchange over
+  account, faculty, undergraduate-teaching, academic-paper and asset records. **Now REST, not
+  GraphQL**: the host name is a fossil of an earlier implementation the portal now labels 老版本
+  (old version). Docs: https://developer.sjtu.edu.cn/graphql/overview.html
+- **jAccount Authorization Server** (`https://jaccount.sjtu.edu.cn/oauth2`) — SJTU's own OAuth 2.0 /
+  OpenID Connect provider, publishing discovery at
+  `/oauth2/.well-known/openid-configuration` and a 39-scope bitmask registry.
+  Docs: https://developer.sjtu.edu.cn/auth/oidc.html
+- **SJTU Identity Provider** (`https://jaccount.sjtu.edu.cn/idp`) — Shibboleth SAML 2.0 IdP with
+  openly published metadata, federating SJTU into CARSI and through it eduGAIN.
+- **Jiao Wo Ban (交我办) Process Platform** — the campus super-app and the low-code workflow platform
+  behind it, with a full first-party developer programme. Also the registration surface for every
+  other SJTU API. Docs: https://developer.sjtu.edu.cn/form/guide/introduce.html
 
-- Plans: [plans/shanghai-jiao-tong-university-plans-pricing.yml](plans/shanghai-jiao-tong-university-plans-pricing.yml)
-- Rate Limits: [rate-limits/shanghai-jiao-tong-university-rate-limits.yml](rate-limits/shanghai-jiao-tong-university-rate-limits.yml)
-- FinOps: [finops/shanghai-jiao-tong-university-finops.yml](finops/shanghai-jiao-tong-university-finops.yml)
+## Artifacts
+
+| Artifact | Path |
+|---|---|
+| OpenAPI — Open API (derived) | [openapi/shanghai-jiao-tong-university-open-api-openapi.yml](openapi/shanghai-jiao-tong-university-open-api-openapi.yml) |
+| OpenAPI — Data Resources (derived) | [openapi/shanghai-jiao-tong-university-data-resources-openapi.yml](openapi/shanghai-jiao-tong-university-data-resources-openapi.yml) |
+| Authentication | [authentication/shanghai-jiao-tong-university-authentication.yml](authentication/shanghai-jiao-tong-university-authentication.yml) |
+| OAuth scopes (39 + `openid`) | [scopes/shanghai-jiao-tong-university-scopes.yml](scopes/shanghai-jiao-tong-university-scopes.yml) |
+| Error catalog (25 codes) | [errors/shanghai-jiao-tong-university-errors.yml](errors/shanghai-jiao-tong-university-errors.yml) |
+| Conformance (education regime) | [conformance/shanghai-jiao-tong-university-conformance.yml](conformance/shanghai-jiao-tong-university-conformance.yml) |
+| JSON Schema | [json-schema/](json-schema/) |
+| Examples | [examples/shanghai-jiao-tong-university-examples.yml](examples/shanghai-jiao-tong-university-examples.yml) |
+| Design rules (SJTU's own) | [rules/shanghai-jiao-tong-university-design-rules.yml](rules/shanghai-jiao-tong-university-design-rules.yml) |
+| Lifecycle + the GraphQL→REST migration | [lifecycle/shanghai-jiao-tong-university-lifecycle.yml](lifecycle/shanghai-jiao-tong-university-lifecycle.yml) |
+| Vocabulary (identity/document code tables) | [vocabulary/shanghai-jiao-tong-university-vocabulary.yml](vocabulary/shanghai-jiao-tong-university-vocabulary.yml) |
+| Well-known probe table + fetched documents | [well-known/](well-known/) |
+| Legacy GraphQL interface (superseded) | [graphql/shanghai-jiao-tong-university-graphql.md](graphql/shanghai-jiao-tong-university-graphql.md) |
+| Plans / Rate Limits / FinOps | [plans/](plans/) · [rate-limits/](rate-limits/) · [finops/](finops/) |
 
 ## Timestamps
 
 - Created: 2026-06-03
-- Modified: 2026-06-03
+- Modified: 2026-08-30
 
 ## Common Properties
 
 - Website: https://en.sjtu.edu.cn/
 - Developer Portal: https://developer.sjtu.edu.cn/
-- Authentication: https://developer.sjtu.edu.cn/auth/oidc.html
-- GitHub: https://github.com/sjtug
+- API Reference: https://developer.sjtu.edu.cn/api/list.html
+- Authentication: https://developer.sjtu.edu.cn/auth/oauth.html
+- Identity Federation: https://jaccount.sjtu.edu.cn/idp/shibboleth
+- Research Computing (交我算): https://docs.hpc.sjtu.edu.cn/
+- Library: https://www.lib.sjtu.edu.cn/
+- Research Repository: https://scholar.sjtu.edu.cn/
+- AI Policy: https://www.sjtu.edu.cn/tg/20250304/207682.html
+- Sign-up (application registration): https://my.sjtu.edu.cn/
 - LinkedIn: https://www.linkedin.com/school/shanghai-jiao-tong-university/
+
+## What changed on 2026-08-30
+
+This profile was rebuilt under the API Evangelist university pipeline. The 2026-06-03 profile was
+correct about ownership and wrong about scope:
+
+- **The entire Open API platform was missing.** 59 operations, 13 families, a 39-scope OAuth
+  registry, a 25-entry error table and a published set of design rules — none of it was recorded.
+  The June notes said `api.sjtu.edu.cn` "did not resolve during probing"; it does. The host answers
+  only under `/v1` and `/v2` and closes the connection at the root, so a root probe reads as dead.
+- **The Data Resources API had migrated from GraphQL to REST** with no `Sunset` header, no changelog
+  and no dated signal, and this repo still described the superseded GraphQL endpoint. It had also
+  gained a fifth data category (资产类, assets).
+- **One gated platform had been split into five `apis[]` entries** by data category — the same
+  footprint inflation that vendor tag-splitting produces. Collapsed to one surface.
+- **Two machine-readable documents were found that had never been catalogued**: OpenID Connect
+  discovery at the issuer-relative path (which is why a root probe missed it), and Shibboleth SAML
+  IdP metadata.
+- **`github.com/sjtug` was re-labelled `x-operator: tenant`** — SJTUG is the SJTU *nix User Group, a
+  student organisation with its own domain, not the university's engineering org.
 
 ## Notes
 
-- All listed documentation URLs were verified live (HTTP 200) on 2026-06-03. The jAccount OAuth authorize endpoint resolves (HTTP 400 without valid parameters), and the GraphQL endpoint resolves (HTTP 200) but is gated behind an application/approval process and credentials, so it was not exercised.
-- The `api.sjtu.edu.cn` host referenced in OAuth docs did not resolve directly during probing.
-- Most developer documentation is in Chinese.
-- No single official university-wide GitHub organization exists; `sjtug` (SJTU *nix User Group) is the most established verified community org. Many department/lab orgs (Thinklab-SJTU, SJTU-IPADS, SJTU-HPC, etc.) also exist.
+- Every URL in `apis.yml` was re-probed on 2026-08-30. Results, including the failures, are in
+  `x-coverage.evidence` and in `well-known/shanghai-jiao-tong-university-well-known.yml`.
+- SJTU publishes **no** OpenAPI, changelog, status page, deprecation policy, `security.txt`,
+  `llms.txt`, agent card or `api-catalog` on any host. Both OpenAPI documents here are DERIVED by
+  API Evangelist from SJTU's own HTML documentation and are marked as such in `info.x-provenance`.
+- `graphql.sjtu.edu.cn` is restricted to the campus network by design — an off-campus request is
+  302'd to `restrict.sjtu.edu.cn` and told to use the SJTU VPN. That is a finding about SJTU.
+  `scholar.sjtu.edu.cn` completes TLS and then returns nothing to a caller outside China; that is a
+  finding about our vantage, and it is recorded as unverified rather than dead.
+- On scholarly infrastructure the gap is real: the Paper API carries `doi` and `wos` as opaque
+  strings but conforms to neither Crossref, DataCite nor ORCID, and no OAI-PMH endpoint could be
+  reached anywhere on `sjtu.edu.cn`.
+- Most developer documentation exists only in Chinese.
+- Department and lab GitHub organisations exist (Thinklab-SJTU, SJTU-IPADS, SJTU-HPC and others);
+  none is an official university engineering org, and no source is published for any platform above.
 - No fabricated endpoints: only confirmed, publicly documented APIs are cataloged.
 
 ## Maintainers

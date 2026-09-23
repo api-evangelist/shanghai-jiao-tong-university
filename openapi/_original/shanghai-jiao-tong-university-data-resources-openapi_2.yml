@@ -1,0 +1,924 @@
+# x-archived-from: shanghai-jiao-tong-university-data-resources-openapi.yml
+# x-archived-on: 2026-09-16
+openapi: 3.1.0
+info:
+  title: Shanghai Jiao Tong University Data Resources API
+  version: 1.0.0
+  summary: SJTU's institution-operated institutional-data exchange API — accounts, faculty, undergraduate
+    teaching, papers and assets.
+  description: '数据资源 (Data Resources) is Shanghai Jiao Tong University''s own institutional data-exchange
+    API, operated by the SJTU Network and Information Center and documented at https://developer.sjtu.edu.cn/graphql/overview.html.
+    It exposes five categories of record produced by the university''s administrative systems: accounts
+    (账号类), faculty and staff (教职工类), undergraduate teaching (本科教学类), academic papers (论文类) and assets
+    (资产类).
+
+
+    IMPORTANT — this surface changed protocol. The current documented contract is REST: every operation
+    is a GET under the common prefix https://graphql.sjtu.edu.cn/v1 with query-string filters and first/offset
+    paging (offset is capped at 200 per call). The host name is a fossil of the earlier GraphQL implementation,
+    which posted queries to https://graphql.sjtu.edu.cn/graphql and is described by the portal as the
+    老版本 (old version) interface. The API Evangelist profile of SJTU carried only the GraphQL form until
+    2026-08-30.
+
+
+    Authorization is the university''s own OAuth 2.0 client-credentials grant against https://jaccount.sjtu.edu.cn/oauth2/token
+    with the exchange_data scope. Access is gated: an application must pass the 数据资源申请流程 (data-resource
+    application workflow), and the grant is field-level — fields that were not applied for come back empty
+    rather than being rejected. Data may only be used for the purpose declared in the application and
+    may not be passed to third parties in any form.
+
+
+    The host is additionally restricted to the campus network: from off campus, https://graphql.sjtu.edu.cn/v1
+    302s to https://restrict.sjtu.edu.cn/, which directs the caller to the SJTU VPN. This document is
+    DERIVED from the university''s published documentation; SJTU publishes no OpenAPI.'
+  termsOfService: https://developer.sjtu.edu.cn/graphql/overview.html
+  contact:
+    name: Shanghai Jiao Tong University Network and Information Center
+    url: https://developer.sjtu.edu.cn/
+  x-operator: institution
+  x-provenance:
+    method: derived
+    source: https://developer.sjtu.edu.cn/graphql/overview.html
+    generated: '2026-08-30'
+    note: 'Paths, query parameters, scope and paging semantics read from the operation blocks and parameter
+      tables the SJTU developer portal renders on developer.sjtu.edu.cn/graphql/{overview,account,faculty,student,paper,asset}.html.
+      Liveness probed 2026-08-30: https://graphql.sjtu.edu.cn/v1/account/info returned 302 to https://restrict.sjtu.edu.cn/
+      (campus-network restriction), not a 404 — the host is live and gated, not dead.'
+servers:
+- url: https://graphql.sjtu.edu.cn
+  description: SJTU Data Resources host. Restricted to the campus network; off-campus callers are redirected
+    to restrict.sjtu.edu.cn and must use the SJTU VPN.
+tags:
+- name: Account
+  description: '账号类 — account records: jAccount name, staff/student number, display name, unit, ID document,
+    identity type and account status.'
+- name: Faculty
+  description: '教职工类 — faculty and staff records: basic profile, degrees, and Party/administrative posts.'
+- name: Undergraduate Teaching
+  description: '本科教学类 — undergraduate teaching records: student profile, course catalog, scheduling, and
+    course selection.'
+- name: Paper
+  description: 论文类 — academic paper and publication metadata.
+- name: Asset
+  description: 资产类 — institutional asset records, keyed by asset type, company code, applicant, keeper,
+    business year and status.
+paths:
+  /v1/account/info:
+    get:
+      summary: Account information
+      description: Account information. Documented as “账号信息” on the SJTU developer platform Data Resources
+        section. Requires an approved data-resource application; the token is obtained with the OAuth
+        2.0 client-credentials grant and the exchange_data scope. Field-level access control applies —
+        fields the application was not granted are returned empty.
+      operationId: get_v1_account_info
+      tags:
+      - Account
+      parameters:
+      - name: accountNo
+        in: query
+        required: false
+        description: jAccount账号
+        schema:
+          type: string
+      - name: userId
+        in: query
+        required: false
+        description: 学工号
+        schema:
+          type: string
+      - name: displayName
+        in: query
+        required: false
+        description: 姓名
+        schema:
+          type: string
+      - name: topOrganizeId
+        in: query
+        required: false
+        description: 二级部门代码
+        schema:
+          type: string
+      - name: cardNo
+        in: query
+        required: false
+        description: 证件号
+        schema:
+          type: string
+      - name: userStyle
+        in: query
+        required: false
+        description: 默认身份类型 （见下方代码表）
+        schema:
+          type: string
+      - name: accountStatus
+        in: query
+        required: false
+        description: 账号状态（正常/过期/冻结）
+        schema:
+          type: string
+      - name: timestamp
+        in: query
+        required: false
+        description: 更新时间（yyyy-MM-dd/yyyy-MM-dd HH:mm:ss）,取大于等于该时间戳的数据
+        schema:
+          type: string
+      - name: first
+        in: query
+        required: false
+        description: 分页起始位置 分页参数说明
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        required: false
+        description: 分页偏移量
+        schema:
+          type: integer
+      security:
+      - jAccountOAuth2:
+        - exchange_data
+      responses:
+        '200':
+          description: Success. errno is 0 and the records are carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/faculty/profile:
+    get:
+      summary: Faculty and staff basic information
+      description: Faculty and staff basic information. Documented as “教工基本信息” on the SJTU developer platform
+        Data Resources section. Requires an approved data-resource application; the token is obtained
+        with the OAuth 2.0 client-credentials grant and the exchange_data scope. Field-level access control
+        applies — fields the application was not granted are returned empty.
+      operationId: get_v1_faculty_profile
+      tags:
+      - Faculty
+      parameters:
+      - name: accountNo
+        in: query
+        required: false
+        description: jAccount账号
+        schema:
+          type: string
+      - name: gh
+        in: query
+        required: false
+        description: 工号
+        schema:
+          type: string
+      - name: topOrganizeId
+        in: query
+        required: false
+        description: 二级单位代码
+        schema:
+          type: string
+      - name: organizeId
+        in: query
+        required: false
+        description: 三级单位代码
+        schema:
+          type: string
+      - name: timestamp
+        in: query
+        required: false
+        description: 更新时间（yyyy-MM-dd/yyyy-MM-dd HH:mm:ss）,取大于等于该时间戳的数据
+        schema:
+          type: string
+      - name: first
+        in: query
+        required: false
+        description: 分页起始位置 分页参数说明
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        required: false
+        description: 分页偏移量
+        schema:
+          type: integer
+      security:
+      - jAccountOAuth2:
+        - exchange_data
+      responses:
+        '200':
+          description: Success. errno is 0 and the records are carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/faculty/degree:
+    get:
+      summary: Faculty and staff degree information
+      description: Faculty and staff degree information. Documented as “教工学位信息” on the SJTU developer
+        platform Data Resources section. Requires an approved data-resource application; the token is
+        obtained with the OAuth 2.0 client-credentials grant and the exchange_data scope. Field-level
+        access control applies — fields the application was not granted are returned empty.
+      operationId: get_v1_faculty_degree
+      tags:
+      - Faculty
+      parameters:
+      - name: gh
+        in: query
+        required: false
+        description: 工号
+        schema:
+          type: string
+      - name: topOrganizeId
+        in: query
+        required: false
+        description: 二级单位代码
+        schema:
+          type: string
+      - name: organizeId
+        in: query
+        required: false
+        description: 三级单位代码
+        schema:
+          type: string
+      - name: timestamp
+        in: query
+        required: false
+        description: 更新时间（yyyy-MM-dd/yyyy-MM-dd HH:mm:ss）,取大于等于该时间戳的数据
+        schema:
+          type: string
+      - name: first
+        in: query
+        required: false
+        description: 分页起始位置
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        required: false
+        description: 分页偏移量
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - exchange_data
+      responses:
+        '200':
+          description: Success. errno is 0 and the records are carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/faculty/post:
+    get:
+      summary: Faculty and staff Party and administrative post information
+      description: Faculty and staff Party and administrative post information. Documented as “教工党政职务信息”
+        on the SJTU developer platform Data Resources section. Requires an approved data-resource application;
+        the token is obtained with the OAuth 2.0 client-credentials grant and the exchange_data scope.
+        Field-level access control applies — fields the application was not granted are returned empty.
+      operationId: get_v1_faculty_post
+      tags:
+      - Faculty
+      parameters:
+      - name: gh
+        in: query
+        required: false
+        description: 工号
+        schema:
+          type: string
+      - name: topOrganizeId
+        in: query
+        required: false
+        description: 二级单位代码
+        schema:
+          type: string
+      - name: organizeId
+        in: query
+        required: false
+        description: 三级单位代码
+        schema:
+          type: string
+      - name: timestamp
+        in: query
+        required: false
+        description: 更新时间（yyyy-MM-dd/yyyy-MM-dd HH:mm:ss）,取大于等于该时间戳的数据
+        schema:
+          type: string
+      - name: first
+        in: query
+        required: false
+        description: 分页起始位置
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        required: false
+        description: 分页偏移量
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - exchange_data
+      responses:
+        '200':
+          description: Success. errno is 0 and the records are carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/stu/profile:
+    get:
+      summary: Student basic information
+      description: Student basic information. Documented as “学生基本信息” on the SJTU developer platform Data
+        Resources section. Requires an approved data-resource application; the token is obtained with
+        the OAuth 2.0 client-credentials grant and the exchange_data scope. Field-level access control
+        applies — fields the application was not granted are returned empty.
+      operationId: get_v1_stu_profile
+      tags:
+      - Undergraduate Teaching
+      parameters:
+      - name: accountNo
+        in: query
+        required: false
+        description: jAccount账号
+        schema:
+          type: string
+      - name: xh
+        in: query
+        required: false
+        description: 学号
+        schema:
+          type: string
+      - name: glyx
+        in: query
+        required: false
+        description: 管理院系代码
+        schema:
+          type: string
+      - name: lxbj
+        in: query
+        required: false
+        description: 离校标记（N:未离校 Y:离校）
+        schema:
+          type: string
+      - name: timestamp
+        in: query
+        required: false
+        description: 更新时间（yyyy-MM-dd/yyyy-MM-dd HH:mm:ss）,取大于等于该时间戳的数据
+        schema:
+          type: string
+      - name: first
+        in: query
+        required: false
+        description: 分页起始位置 分页参数说明
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        required: false
+        description: 分页偏移量
+        schema:
+          type: integer
+      security:
+      - jAccountOAuth2:
+        - exchange_data
+      responses:
+        '200':
+          description: Success. errno is 0 and the records are carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/course/info:
+    get:
+      summary: Course information
+      description: Course information. Documented as “课程信息” on the SJTU developer platform Data Resources
+        section. Requires an approved data-resource application; the token is obtained with the OAuth
+        2.0 client-credentials grant and the exchange_data scope. Field-level access control applies —
+        fields the application was not granted are returned empty.
+      operationId: get_v1_course_info
+      tags:
+      - Undergraduate Teaching
+      parameters:
+      - name: rscGh
+        in: query
+        required: false
+        description: 任课老师工号
+        schema:
+          type: string
+      - name: orgId
+        in: query
+        required: false
+        description: 开课学院代码
+        schema:
+          type: string
+      - name: courseKcdm
+        in: query
+        required: false
+        description: 课程代码
+        schema:
+          type: string
+      - name: courseSchoolyear
+        in: query
+        required: false
+        description: 学年 （例：2022-2023）
+        schema:
+          type: string
+      - name: courseTerm
+        in: query
+        required: false
+        description: 学期
+        schema:
+          type: string
+      - name: instructionalClassId
+        in: query
+        required: false
+        description: 课程号
+        schema:
+          type: string
+      - name: timestamp
+        in: query
+        required: false
+        description: 更新时间（yyyy-MM-dd/yyyy-MM-dd HH:mm:ss）,取大于等于该时间戳的数据
+        schema:
+          type: string
+      - name: first
+        in: query
+        required: false
+        description: 分页起始位置
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        required: false
+        description: 分页偏移量
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - exchange_data
+      responses:
+        '200':
+          description: Success. errno is 0 and the records are carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/course/plan:
+    get:
+      summary: Course scheduling information
+      description: Course scheduling information. Documented as “排课信息” on the SJTU developer platform
+        Data Resources section. Requires an approved data-resource application; the token is obtained
+        with the OAuth 2.0 client-credentials grant and the exchange_data scope. Field-level access control
+        applies — fields the application was not granted are returned empty.
+      operationId: get_v1_course_plan
+      tags:
+      - Undergraduate Teaching
+      parameters:
+      - name: rscGh
+        in: query
+        required: false
+        description: 任课老师工号
+        schema:
+          type: string
+      - name: courseSchoolyear
+        in: query
+        required: false
+        description: 学年 （例：2022-2023）
+        schema:
+          type: string
+      - name: courseTerm
+        in: query
+        required: false
+        description: 学期
+        schema:
+          type: string
+      - name: instructionalClassId
+        in: query
+        required: false
+        description: 课程号
+        schema:
+          type: string
+      - name: timestamp
+        in: query
+        required: false
+        description: 更新时间（yyyy-MM-dd/yyyy-MM-dd HH:mm:ss）,取大于等于该时间戳的数据
+        schema:
+          type: string
+      - name: first
+        in: query
+        required: false
+        description: 分页起始位置
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        required: false
+        description: 分页偏移量
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - exchange_data
+      responses:
+        '200':
+          description: Success. errno is 0 and the records are carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/course/selection:
+    get:
+      summary: Course-selection (enrolment) information
+      description: Course-selection (enrolment) information. Documented as “选课信息” on the SJTU developer
+        platform Data Resources section. Requires an approved data-resource application; the token is
+        obtained with the OAuth 2.0 client-credentials grant and the exchange_data scope. Field-level
+        access control applies — fields the application was not granted are returned empty.
+      operationId: get_v1_course_selection
+      tags:
+      - Undergraduate Teaching
+      parameters:
+      - name: xh
+        in: query
+        required: false
+        description: 学号
+        schema:
+          type: string
+      - name: courseId
+        in: query
+        required: false
+        description: 课程ID
+        schema:
+          type: string
+      - name: courseSchoolyear
+        in: query
+        required: false
+        description: 学年 （例：2022-2023）
+        schema:
+          type: string
+      - name: courseTerm
+        in: query
+        required: false
+        description: 学期
+        schema:
+          type: string
+      - name: timestamp
+        in: query
+        required: false
+        description: 更新时间（yyyy-MM-dd/yyyy-MM-dd HH:mm:ss）,取大于等于该时间戳的数据
+        schema:
+          type: string
+      - name: first
+        in: query
+        required: false
+        description: 分页起始位置
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        required: false
+        description: 分页偏移量
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - exchange_data
+      responses:
+        '200':
+          description: Success. errno is 0 and the records are carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/paper/info:
+    get:
+      summary: Academic paper information
+      description: Academic paper information. Documented as “论文信息” on the SJTU developer platform Data
+        Resources section. Requires an approved data-resource application; the token is obtained with
+        the OAuth 2.0 client-credentials grant and the exchange_data scope. Field-level access control
+        applies — fields the application was not granted are returned empty.
+      operationId: get_v1_paper_info
+      tags:
+      - Paper
+      parameters: []
+      security:
+      - jAccountOAuth2:
+        - exchange_data
+      responses:
+        '200':
+          description: Success. errno is 0 and the records are carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/asset/info:
+    get:
+      summary: Asset information
+      description: Asset information. Documented as “资产信息” on the SJTU developer platform Data Resources
+        section. Requires an approved data-resource application; the token is obtained with the OAuth
+        2.0 client-credentials grant and the exchange_data scope. Field-level access control applies —
+        fields the application was not granted are returned empty.
+      operationId: get_v1_asset_info
+      tags:
+      - Asset
+      parameters:
+      - name: assessType
+        in: query
+        required: false
+        description: 资产类型（见下方代码表）
+        schema:
+          type: string
+      - name: companyCode
+        in: query
+        required: false
+        description: 资产所属二级部门代码
+        schema:
+          type: string
+      - name: applyUserAccount
+        in: query
+        required: false
+        description: 申请人jAccount
+        schema:
+          type: string
+      - name: applyUserCode
+        in: query
+        required: false
+        description: 申请人工号
+        schema:
+          type: string
+      - name: keeperAccount
+        in: query
+        required: false
+        description: 保管人jAccount
+        schema:
+          type: string
+      - name: keeperCode
+        in: query
+        required: false
+        description: 保管人工号
+        schema:
+          type: string
+      - name: businessYear
+        in: query
+        required: false
+        description: 业务年度
+        schema:
+          type: string
+      - name: status
+        in: query
+        required: false
+        description: 资产状态
+        schema:
+          type: integer
+      - name: timestamp
+        in: query
+        required: false
+        description: 更新时间（yyyy-MM-dd/yyyy-MM-dd HH:mm:ss）,取大于等于该时间戳的数据
+        schema:
+          type: string
+      - name: first
+        in: query
+        required: false
+        description: 分页起始位置 分页参数说明
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        required: false
+        description: 分页偏移量
+        schema:
+          type: integer
+      security:
+      - jAccountOAuth2:
+        - exchange_data
+      responses:
+        '200':
+          description: Success. errno is 0 and the records are carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+components:
+  securitySchemes:
+    jAccountOAuth2:
+      type: oauth2
+      description: OAuth 2.0 client-credentials grant issued by SJTU's own jAccount authorization server.
+        The exchange_data scope must be approved through the data-resource application workflow.
+      flows:
+        clientCredentials:
+          tokenUrl: https://jaccount.sjtu.edu.cn/oauth2/token
+          scopes:
+            exchange_data: Data exchange — required by every Data Resources operation.
+  schemas:
+    Envelope:
+      type: object
+      description: The common response envelope every Data Resources API returns.
+      properties:
+        errno:
+          type: integer
+          description: Error code. 0 means the call succeeded.
+          example: 0
+        error:
+          type: string
+          nullable: true
+          description: Optional error message.
+        total:
+          type: integer
+          description: Number of records returned by this call. Use it when paging to decide whether to
+            keep querying.
+        entities:
+          type: array
+          description: Returned records.
+          items:
+            type: object
+      required:
+      - errno
+    Error:
+      type: object
+      properties:
+        errno:
+          type: integer
+        error:
+          type: string
+        total:
+          type: integer
+      required:
+      - errno
+externalDocs:
+  description: SJTU Developer Platform — Data Resources documentation
+  url: https://developer.sjtu.edu.cn/graphql/overview.html

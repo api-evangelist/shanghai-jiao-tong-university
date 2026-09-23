@@ -1,0 +1,108 @@
+generated: '2026-08-30'
+method: derived
+x-evidence-method: probed
+x-authorship: >-
+  Written by API Evangelist from live probes of SJTU's own hosts plus SJTU's own published
+  documentation. Not authored or published by Shanghai Jiao Tong University.
+source: live GET of /.well-known/* , /llms.txt and /openapi.json on every SJTU host in apis.yml
+summary: >-
+  SJTU publishes ONE machine-readable discovery document, and it is a real one: OpenID Connect
+  provider metadata on its own jAccount authorization server. It is served at the non-standard
+  issuer-relative path /oauth2/.well-known/openid-configuration rather than at the host root, which
+  is why a root-only probe of jaccount.sjtu.edu.cn reports nothing and had the surface recorded as
+  documentation-only until 2026-08-30. Alongside it, the same host serves Shibboleth/SAML 2.0
+  identity-provider metadata at /idp/shibboleth as application/xml — institution-operated identity
+  federation, machine-readable, and the strongest education-regime conformance signal in this repo.
+  No security.txt, no agent card, no api-catalog, no llms.txt and no OpenAPI is published on any
+  SJTU host. api.sjtu.edu.cn answers nothing outside /v1 and /v2 — the connection is closed with an
+  empty reply rather than a 404, so absence there is a gateway behaviour, not a routing answer.
+hosts:
+- host: https://jaccount.sjtu.edu.cn
+  operator: institution
+  documents:
+  - path: /oauth2/.well-known/openid-configuration
+    status: 200
+    content_type: application/json
+    file: shanghai-jiao-tong-university-openid-configuration.json
+    note: >-
+      Issuer https://jaccount.sjtu.edu.cn/oauth2/. Minimal but valid: authorization_endpoint,
+      token_endpoint, response_types_supported (code, code id_token, id_token, id_token token),
+      subject_types_supported (public), id_token_signing_alg_values_supported (HS256) and
+      scopes_supported (openid, basic). No jwks_uri, no userinfo_endpoint, no
+      registration_endpoint, no introspection or revocation endpoint is advertised — ID tokens are
+      HS256-signed with the client_secret, which is why no JWKS is needed and also why the
+      provider is not usable by a public client.
+  - path: /idp/shibboleth
+    status: 200
+    content_type: application/xml
+    file: shanghai-jiao-tong-university-saml-idp-metadata.xml
+    note: >-
+      Shibboleth IdP SAML metadata. entityID https://jaccount.sjtu.edu.cn/idp/shibboleth,
+      shibmd:Scope sjtu.edu.cn, mdui:DisplayName "SJTU Identity Provider". Supports SAML 2.0,
+      SAML 1.1 and Shibboleth 1.0, with SSO over HTTP-POST, HTTP-POST-SimpleSign and
+      HTTP-Redirect, four SingleLogoutService bindings, artifact resolution, and a SAML 1.1
+      AttributeAuthorityDescriptor with SOAP AttributeQuery.
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /oauth2/jwks
+    status: 404
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /llms.txt
+    status: 404
+- host: https://api.sjtu.edu.cn
+  operator: institution
+  documents:
+  - path: /v1/me/profile
+    status: 403
+    note: >-
+      Not a discovery document — the liveness probe for the Open API gateway. Returns
+      {"errno":10002,"error":"Authentication Failed.","total":0}, which is the documented
+      authentication failure and confirms a real OAuth-protected gateway rather than a parked host.
+  - path: /
+    status: 000
+    note: Empty reply — the gateway closes the connection outside /v1 and /v2.
+  - path: /.well-known/security.txt
+    status: 000
+  - path: /openapi.json
+    status: 000
+  - path: /llms.txt
+    status: 000
+- host: https://developer.sjtu.edu.cn
+  operator: institution
+  documents:
+  - path: /robots.txt
+    status: 404
+  - path: /sitemap.xml
+    status: 404
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /openapi.json
+    status: 404
+  - path: /llms.txt
+    status: 404
+- host: https://www.sjtu.edu.cn
+  operator: institution
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /llms.txt
+    status: 404
+- host: https://graphql.sjtu.edu.cn
+  operator: institution
+  documents:
+  - path: /v1
+    status: 302
+    location: https://restrict.sjtu.edu.cn/
+    note: >-
+      Campus-network restriction, not a 404 and not a soft-404. The redirect target is an SJTU
+      page telling off-campus callers to dial the university VPN first. The host is live and
+      gated.

@@ -1,0 +1,432 @@
+openapi: 3.2.0
+info:
+  title: Shanghai Jiao Tong University Open Finance API
+  version: 1.0.0
+  summary: The institution-operated REST API platform SJTU's Network & Information Center runs at api.sjtu.edu.cn.
+  description: The SJTU Open API platform (开放API) is operated by the Shanghai Jiao Tong University Network and Information Center (上海交通大学网络信息中心) and documented on the university's own developer portal at https://developer.sjtu.edu.cn/api/overview.html.
+  termsOfService: https://developer.sjtu.edu.cn/api/overview.html
+  contact:
+    name: Shanghai Jiao Tong University Network and Information Center
+    url: https://developer.sjtu.edu.cn/
+  x-operator: institution
+  x-provenance:
+    method: derived
+    source: https://developer.sjtu.edu.cn/api/list.html
+    generated: '2026-08-30'
+    note: Paths, methods, OAuth grants and per-operation scopes were read from the operation blocks the SJTU developer portal renders on developer.sjtu.edu.cn/api/*.html. Envelope, error and Profile schemas were read from developer.sjtu.edu.cn/api/overview.html and /api/profile.html. Liveness confirmed by an unauthenticated GET of https://api.sjtu.edu.cn/v1/me/profile, which returned 403 {"errno":10002,"error":"Authentication Failed.","total":0} on 2026-08-30.
+servers:
+- url: https://api.sjtu.edu.cn
+  description: SJTU Open API production host, operated by the SJTU Network and Information Center.
+tags:
+- name: Finance
+  description: Finance appointment workflow — submit, cancel, complete and query financial business items.
+paths:
+  /v1/finance/appointments/{businessType}/{businessNo}:
+    get:
+      summary: Get one finance appointment
+      description: 'Get one finance appointment. Documented as “获取单个业务详情” on the SJTU developer platform. Supported OAuth 2.0 grants: clientCredentials. Covered by the SJTU Java API SDK.'
+      operationId: get_v1_finance_appointments_businessType_businessNo
+      tags:
+      - Finance
+      parameters:
+      - name: businessType
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: businessNo
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - connect_finance
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+    put:
+      summary: Submit a new finance appointment
+      description: 'Submit a new finance appointment. Documented as “提交新的业务” on the SJTU developer platform. Supported OAuth 2.0 grants: clientCredentials. Covered by the SJTU Java API SDK.'
+      operationId: put_v1_finance_appointments_businessType_businessNo
+      tags:
+      - Finance
+      parameters:
+      - name: businessType
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: businessNo
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - connect_finance
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+    delete:
+      summary: Cancel a finance appointment
+      description: 'Cancel a finance appointment. Documented as “撤销业务” on the SJTU developer platform. Supported OAuth 2.0 grants: clientCredentials. Covered by the SJTU Java API SDK.'
+      operationId: delete_v1_finance_appointments_businessType_businessNo
+      tags:
+      - Finance
+      parameters:
+      - name: businessType
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: businessNo
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - connect_finance
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+    post:
+      summary: Mark a finance appointment complete
+      description: 'Mark a finance appointment complete. Documented as “标记业务处理完成” on the SJTU developer platform. Supported OAuth 2.0 grants: clientCredentials. Covered by the SJTU Java API SDK.'
+      operationId: post_v1_finance_appointments_businessType_businessNo
+      tags:
+      - Finance
+      parameters:
+      - name: businessType
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: businessNo
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - connect_finance
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/finance/appointments/{businessType}:
+    get:
+      summary: List completed, cancelled or returned finance appointments
+      description: 'List completed, cancelled or returned finance appointments. Documented as “获取已完成或已撤销/退回的业务” on the SJTU developer platform. Supported OAuth 2.0 grants: clientCredentials. Covered by the SJTU Java API SDK.'
+      operationId: get_v1_finance_appointments_businessType
+      tags:
+      - Finance
+      parameters:
+      - name: businessType
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - connect_finance
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+components:
+  schemas:
+    Envelope:
+      type: object
+      description: The common response envelope every SJTU open API returns.
+      properties:
+        errno:
+          type: integer
+          description: Error code. 0 means the call succeeded.
+          example: 0
+        error:
+          type: string
+          description: Optional error message.
+          example: success
+        total:
+          type: integer
+          description: Optional; present when paging. Total number of matching records, so total >= entities.length.
+        nextToken:
+          type: string
+          description: Optional; present when paging. Pass back as pageToken to fetch the next page. Absent on the last page.
+        entities:
+          type: array
+          description: Returned objects. Length 0 when there is no object; a single object is at entities[0].
+          items:
+            type: object
+      required:
+      - errno
+    Error:
+      type: object
+      description: Error payload. errno carries the SJTU API error code; see errors/shanghai-jiao-tong-university-errors.yml.
+      properties:
+        errno:
+          type: integer
+          example: 10002
+        error:
+          type: string
+          example: Authentication Failed.
+        total:
+          type: integer
+          example: 0
+      required:
+      - errno
+  securitySchemes:
+    jAccountOAuth2:
+      type: oauth2
+      description: 'OAuth 2.0 issued by SJTU''s own jAccount authorization server. The issuer publishes OpenID Connect discovery at https://jaccount.sjtu.edu.cn/oauth2/.well-known/openid-configuration. Tokens may be sent as the access_token query/body parameter or as an Authorization: Bearer header (RFC 6750). Which grant an operation accepts is stated in its description.'
+      flows:
+        authorizationCode:
+          authorizationUrl: https://jaccount.sjtu.edu.cn/oauth2/authorize
+          tokenUrl: https://jaccount.sjtu.edu.cn/oauth2/token
+          scopes:
+            basic: Read the user's identifier (system id and jAccount name) and real name.
+            essential: Read basic identifier and name plus the bound identity (identity id, identity type, and owning department/school).
+            profile: Read fuller user detail — basic identifier, name, account information, mobile number, usual email address.
+            unicode: Activate, retrieve or validate the Siyuan code (思源码).
+            tasks: Read actionable/pending/in-progress/completed task lists; read or aggregate manageable workflows, instances and tasks.
+            messages: Read the user's messages.
+            notifications: Read the user's system notifications.
+            privacy: Read the user's detailed information, including personal ID-document details and date of birth.
+            introspect: Introspect an OAuth token. API-development use only.
+            read_apps: Read application registration information.
+            write_apps: Create and modify application registration information.
+            exchange_data: Data exchange — the scope the Data Resources APIs on graphql.sjtu.edu.cn require.
+            signature: Obtain a digital signature.
+            manage_card: Campus-card management, such as account opening.
+            send_app_notification: Send a Jiao-Wo-Ban (交我办) app notification to a user.
+            send_notification: Send a notification to a user.
+            read_mails: Read the user's mail.
+            send_mail: Send mail on the user's behalf, or change a message's read state.
+            storage: Full control of the application's own unstructured storage.
+            modify_notification: Modify the state of the application's own notifications.
+            lessons: Read the user's lesson information.
+            classes: Read the user's timetable (including courses).
+            exams: Read the user's examination information.
+            scores: Read the user's examination results.
+            students_list: Read the enrolled-student roster for a class (teacher).
+            card_info: Read the user's campus-card information.
+            card_transactions: Read the user's campus-card transaction records.
+            write_card_info: Campus-card write operations — change the query password, report a card lost, top up from a bound bank card.
+            income: Query the user's income information.
+            create_jaccount: Create a jAccount account.
+            edit_jaccount: Modify a jAccount account.
+            net_service_info: Read all personal network-service information for a specified user.
+            connect_wechat: Bind a jAccount to a WeChat account.
+            connect_shmec: Bind a jAccount to a Shanghai Municipal Education Commission account.
+            print: Self-service printing.
+            connect_finance: Integrate with the finance appointment system.
+            student_affairs: Retrieve student-affairs information.
+            bus: Read campus-bus and inter-campus shuttle timetables and real-time information.
+            calendar: Synchronise calendar information.
+        clientCredentials:
+          tokenUrl: https://jaccount.sjtu.edu.cn/oauth2/token
+          scopes:
+            basic: Read the user's identifier (system id and jAccount name) and real name.
+            essential: Read basic identifier and name plus the bound identity (identity id, identity type, and owning department/school).
+            profile: Read fuller user detail — basic identifier, name, account information, mobile number, usual email address.
+            unicode: Activate, retrieve or validate the Siyuan code (思源码).
+            tasks: Read actionable/pending/in-progress/completed task lists; read or aggregate manageable workflows, instances and tasks.
+            messages: Read the user's messages.
+            notifications: Read the user's system notifications.
+            privacy: Read the user's detailed information, including personal ID-document details and date of birth.
+            introspect: Introspect an OAuth token. API-development use only.
+            read_apps: Read application registration information.
+            write_apps: Create and modify application registration information.
+            exchange_data: Data exchange — the scope the Data Resources APIs on graphql.sjtu.edu.cn require.
+            signature: Obtain a digital signature.
+            manage_card: Campus-card management, such as account opening.
+            send_app_notification: Send a Jiao-Wo-Ban (交我办) app notification to a user.
+            send_notification: Send a notification to a user.
+            read_mails: Read the user's mail.
+            send_mail: Send mail on the user's behalf, or change a message's read state.
+            storage: Full control of the application's own unstructured storage.
+            modify_notification: Modify the state of the application's own notifications.
+            lessons: Read the user's lesson information.
+            classes: Read the user's timetable (including courses).
+            exams: Read the user's examination information.
+            scores: Read the user's examination results.
+            students_list: Read the enrolled-student roster for a class (teacher).
+            card_info: Read the user's campus-card information.
+            card_transactions: Read the user's campus-card transaction records.
+            write_card_info: Campus-card write operations — change the query password, report a card lost, top up from a bound bank card.
+            income: Query the user's income information.
+            create_jaccount: Create a jAccount account.
+            edit_jaccount: Modify a jAccount account.
+            net_service_info: Read all personal network-service information for a specified user.
+            connect_wechat: Bind a jAccount to a WeChat account.
+            connect_shmec: Bind a jAccount to a Shanghai Municipal Education Commission account.
+            print: Self-service printing.
+            connect_finance: Integrate with the finance appointment system.
+            student_affairs: Retrieve student-affairs information.
+            bus: Read campus-bus and inter-campus shuttle timetables and real-time information.
+            calendar: Synchronise calendar information.
+        password:
+          tokenUrl: https://jaccount.sjtu.edu.cn/oauth2/token
+          scopes:
+            basic: Read the user's identifier (system id and jAccount name) and real name.
+            essential: Read basic identifier and name plus the bound identity (identity id, identity type, and owning department/school).
+            profile: Read fuller user detail — basic identifier, name, account information, mobile number, usual email address.
+            unicode: Activate, retrieve or validate the Siyuan code (思源码).
+            tasks: Read actionable/pending/in-progress/completed task lists; read or aggregate manageable workflows, instances and tasks.
+            messages: Read the user's messages.
+            notifications: Read the user's system notifications.
+            privacy: Read the user's detailed information, including personal ID-document details and date of birth.
+            introspect: Introspect an OAuth token. API-development use only.
+            read_apps: Read application registration information.
+            write_apps: Create and modify application registration information.
+            exchange_data: Data exchange — the scope the Data Resources APIs on graphql.sjtu.edu.cn require.
+            signature: Obtain a digital signature.
+            manage_card: Campus-card management, such as account opening.
+            send_app_notification: Send a Jiao-Wo-Ban (交我办) app notification to a user.
+            send_notification: Send a notification to a user.
+            read_mails: Read the user's mail.
+            send_mail: Send mail on the user's behalf, or change a message's read state.
+            storage: Full control of the application's own unstructured storage.
+            modify_notification: Modify the state of the application's own notifications.
+            lessons: Read the user's lesson information.
+            classes: Read the user's timetable (including courses).
+            exams: Read the user's examination information.
+            scores: Read the user's examination results.
+            students_list: Read the enrolled-student roster for a class (teacher).
+            card_info: Read the user's campus-card information.
+            card_transactions: Read the user's campus-card transaction records.
+            write_card_info: Campus-card write operations — change the query password, report a card lost, top up from a bound bank card.
+            income: Query the user's income information.
+            create_jaccount: Create a jAccount account.
+            edit_jaccount: Modify a jAccount account.
+            net_service_info: Read all personal network-service information for a specified user.
+            connect_wechat: Bind a jAccount to a WeChat account.
+            connect_shmec: Bind a jAccount to a Shanghai Municipal Education Commission account.
+            print: Self-service printing.
+            connect_finance: Integrate with the finance appointment system.
+            student_affairs: Retrieve student-affairs information.
+            bus: Read campus-bus and inter-campus shuttle timetables and real-time information.
+            calendar: Synchronise calendar information.
+externalDocs:
+  description: SJTU Developer Platform — Open API documentation
+  url: https://developer.sjtu.edu.cn/api/overview.html

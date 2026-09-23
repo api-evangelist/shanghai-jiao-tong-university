@@ -1,0 +1,122 @@
+generated: '2026-08-30'
+method: searched
+source: https://developer.sjtu.edu.cn/api/overview.html#错误代码
+x-operator: institution
+format: sjtu-envelope
+rfc9457: false
+note: >-
+  SJTU does NOT use RFC 9457 application/problem+json. Errors are carried in the same envelope as
+  success: a JSON body with an integer errno, an optional error string and total. errno 0 means the
+  call succeeded. The overview documents that a 403 in particular always carries a specific reason in
+  the body — and the live gateway confirms it: an unauthenticated GET of
+  https://api.sjtu.edu.cn/v1/me/profile on 2026-08-30 returned
+  {"errno":10002,"error":"Authentication Failed.","total":0} with HTTP 403.
+
+  Two behaviours are worth an integrator's attention. First, the HTTP status and errno are not always
+  aligned — the notification example in the documentation shows a FAILED call returning HTTP 200 with
+  errno 10001, so a client that switches on the status code alone will read a failure as a success.
+  Second, the error string carries structured detail inline as
+  "BAD_PARAMETERS\n\nMORE_INFORMATION:phones is required" rather than in a separate field.
+envelope:
+  content_type: application/json;charset=UTF-8
+  fields:
+    errno: Integer error code. 0 on success.
+    error: Optional human-readable message. May embed MORE_INFORMATION:<detail> after a blank line.
+    total: Optional record count; 0 on error.
+  example:
+    errno: 10002
+    error: Authentication Failed.
+    total: 0
+status_codes:
+- status: 200
+  description: OK — the request succeeded. May still carry a non-zero errno; check errno, not the status.
+- status: 400
+  description: Bad Request — usually a parameter error.
+- status: 403
+  description: Forbidden — usually an authentication or scope failure. The body names the reason.
+- status: 404
+  description: Not Found — usually a wrong resource path.
+- status: 405
+  description: Method Not Allowed — usually a wrong request method.
+- status: 500
+  description: Internal Server Error — an error inside API processing.
+- status: 503
+  description: Service Unavailable — the API server is restarting for maintenance or is down.
+codes:
+- errno: -1
+  name: UNKNOWN_ERROR
+  message: Unknown error, InfoPlus got itself in trouble.
+- errno: -2
+  name: EXCEPTION
+  message: Exception
+- errno: 10001
+  name: BAD_PARAMETERS
+  message: Invalid Parameters
+- errno: 10002
+  name: AUTHENTICATION_FAILED
+  message: Authentication failed
+  observed: true
+  observed_note: Returned live on an unauthenticated GET of /v1/me/profile, 2026-08-30, with HTTP 403.
+- errno: 10003
+  name: ENTITLE_FAILURE
+  message: EntitleService Unavailable
+- errno: 10004
+  name: INTERNAL_FAILURE
+  message: Server got itself in trouble
+- errno: 10005
+  name: INSERT_FAILURE
+  message: Insert Data failed
+- errno: 10006
+  name: UPDATE_FAILURE
+  message: Update Data failed
+- errno: 10007
+  name: ACCESS_TOKEN_EXPIRED
+  message: Access token expired (令牌过期)
+- errno: 10008
+  name: GETDATA_NOT_FOUND
+  message: Data does not exist (数据不存在)
+- errno: 10010
+  name: AUTHENTICATION_SCOPE_FAILED
+  message: The token does not carry a scope this operation requires.
+- errno: 15005
+  name: MODIFY_NOTIFICATION_VERBRESULT_ERROR
+  message: A notification's action result cannot be modified again.
+- errno: 15006
+  name: RECEIVER_BEYOND_LIMIT
+  message: Recipients may not exceed 10.
+- errno: 15007
+  name: OPERATION_OBJECT_ERROR
+  message: The operation target is missing or wrong.
+- errno: 15008
+  name: CIRCLE_ADMIN_NOT_TRUST_CIRCLE
+  message: A circle administrator may not trust their own circle.
+- errno: 15009
+  name: PROFILE_HAS_TRUST_CIRCLE
+  message: The circle is already trusted.
+- errno: 15010
+  name: NOTIFICATION_SEND_CHANNEL_ERROR
+  message: The notification push channel is wrong.
+- errno: 50001
+  name: UPLOAD_FILE_MESSAGE_NOTEXITS
+  message: The file to upload was not found.
+- errno: 50002
+  name: UPLOAD_FILE_MESSAGE_TOOLARGE
+  message: The file to upload is too large.
+- errno: 50003
+  name: EDIT_FILE_MESSAGE_FILENAME_ERROR
+  message: The file name is not valid.
+- errno: 50004
+  name: EDIT_FILE_MESSAGE_FILETAGS_ERROR
+  message: The file tags are not valid.
+- errno: 50005
+  name: FILE_MESSAGE_APPID_INVALID
+  message: The appId is invalid.
+- errno: 50006
+  name: FILE_UPLOAD_ACCOUNT_ERROR
+  message: The uploading account is wrong.
+- errno: 60001
+  name: TASK_EXIST
+  message: The task already exists in the task centre.
+- errno: 70001
+  name: INVALID_CLASSES
+  message: Teaching-class information is unavailable.

@@ -1,0 +1,190 @@
+generated: '2026-08-30'
+method: searched
+source: https://developer.sjtu.edu.cn/
+x-operator: institution
+vocabulary:
+  name: Shanghai Jiao Tong University Campus Platform Vocabulary
+  description: >-
+    The domain vocabulary of SJTU's institution-operated developer platform. Every term below is
+    the university's own — the platform names, the identity-type codes and the document-type codes
+    are read from SJTU's published tables, not invented. This vocabulary is what an integrator (or
+    an agent) has to learn before an SJTU API call means anything, and most of it exists only in
+    Chinese on the university's own portal.
+  version: '2026-08-30'
+  terms:
+  - term: jAccount
+    chinese: jAccount
+    definition: >-
+      SJTU's own identity system and single sign-on service, run by the Network and Information
+      Center at jaccount.sjtu.edu.cn. It is simultaneously an OAuth 2.0 authorization server, an
+      OpenID Connect provider and a Shibboleth SAML identity provider, and it gates every
+      programmable surface the university operates.
+    tags: [Platform, Identity, Core Concept]
+  - term: SJTU Developers
+    chinese: 上海交通大学开发者平台
+    definition: >-
+      The university's developer portal at developer.sjtu.edu.cn. Four sections — 认证与授权
+      (authentication and authorization), 开放API (Open API), 交我办 (the process platform) and
+      数据资源 (Data Resources).
+    tags: [Platform, Documentation]
+  - term: Open API
+    chinese: 开放API
+    definition: >-
+      The REST API platform at api.sjtu.edu.cn. Thirteen documented families, 59 documented
+      operations, all OAuth-protected, all returning the common errno/entities envelope.
+    tags: [Platform, API]
+  - term: Data Resources
+    chinese: 数据资源
+    definition: >-
+      SJTU's institutional data-exchange API at graphql.sjtu.edu.cn/v1. Defined by the university
+      as "the data produced and accumulated by campus information systems in the course of their
+      construction and use", with completeness, accuracy, timeliness and availability guaranteed by
+      the department that produces the data, and classification level and sharing method set by that
+      department or its managing body. Five categories: 账号类, 教职工类, 本科教学类, 论文类, 资产类.
+    tags: [Platform, Data, Governance]
+  - term: Jiao Wo Ban
+    chinese: 交我办
+    definition: >-
+      SJTU's campus super-app and process platform — the mobile front door through which staff and
+      students transact with the university, and an application platform third-party developers
+      build workflow applications on. The developer portal ships a full guide covering form design,
+      workflow modelling, permissions, notifications, dynamic formulas, a JsSdk, IFrame controls,
+      parent/child processes and export. Registration for every SJTU API application is itself done
+      through this app or through my.sjtu.edu.cn.
+    tags: [Platform, Campus Life, Workflow]
+  - term: Jiao Wo Suan
+    chinese: 交我算
+    definition: >-
+      SJTU's university-level high-performance computing platform, also run by the Network and
+      Information Center. The name is a pun: it marks the platform as the university's own, and
+      reads as "leave the computing to me". Clusters include Siyuan-1 (思源一号), Zhiyuan-1 (致远一号,
+      a 1,024-card Huawei Ascend 910B domestic AI cluster commissioned in 2025) and π 2.0.
+    tags: [Research Computing, Platform]
+  - term: Siyuan code
+    chinese: 思源码
+    definition: >-
+      The campus identity and payment QR code. One API family (Unicode) covers its activation,
+      validation, identity code, payment code, integration parameters and transaction history.
+      Named for 饮水思源, the SJTU motto fragment meaning "when drinking water, think of its source".
+    tags: [Campus Life, Payments, Identity]
+  - term: Campus card
+    chinese: 一卡通
+    definition: >-
+      The physical campus card. Fourteen documented operations cover account opening, balance,
+      transactions, photo, top-up requests, freeze/unfreeze, lost-card reporting and balance
+      transfer — the most operation-dense family on the platform.
+    tags: [Campus Life, Payments]
+  - term: InfoPlus
+    definition: >-
+      SJTU's workflow engine, named in the platform's own error table (UNKNOWN_ERROR reads "InfoPlus
+      got itself in trouble"). The Task API pushes workflow task updates into the campus task centre.
+    tags: [Workflow, Platform]
+  - term: teaching class
+    chinese: 教学班
+    definition: >-
+      The unit of instruction the Education API is keyed on — a specific offering of a course in a
+      specific term, addressed by course code or bsid. Distinct from the course itself.
+    tags: [Teaching, Core Concept]
+  - term: data resource application workflow
+    chinese: 数据资源申请流程
+    definition: >-
+      The approval process that gates Data Resources access. It grants FIELDS, not endpoints: an
+      application receives the specific columns it applied for, and any other field in the same
+      response comes back empty rather than the call being rejected.
+    tags: [Governance, Access Control]
+  - term: field-level scope control
+    definition: >-
+      The platform-wide pattern by which the same operation returns a different object shape
+      depending on the approved scope. GET /v1/me/profile returns id, account, name and kind to a
+      basic token; code, userType, organize and topOrganize additionally to essential; classNo to
+      profile; and avatars only to privacy.
+    tags: [Access Control, Core Concept]
+  - term: kind
+    definition: >-
+      A platform-wide object-type marker. Every returned object carries a kind that uniquely
+      identifies its type, and every object carries a uri giving its web address. The profile
+      object's kind is canvas.profile.
+    tags: [Data Model, Core Concept]
+  - term: campus-network restriction
+    chinese: 校园网限制
+    definition: >-
+      The access control that fronts graphql.sjtu.edu.cn. An off-campus request is 302'd to
+      restrict.sjtu.edu.cn, which instructs the caller to connect the SJTU VPN first. It is a
+      network boundary, not an authentication failure, and it sits in front of the OAuth check.
+    tags: [Access Control, Operations]
+identity_types:
+  note: >-
+    The userType / userStyle enumeration, published in two slightly different forms — the Open API
+    Profile table and the Data Resources account table disagree on three codes, which is itself a
+    finding. Both are recorded.
+  open_api_profile:
+    source: https://developer.sjtu.edu.cn/api/profile.html
+    values:
+      faculty: Faculty and staff (教职工)
+      student: Student (学生)
+      yxy: Medical school faculty and staff (医学院教职工)
+      fs: Affiliated-unit staff (附属单位职工)
+      vip: VIP
+      postphd: Postdoctoral researcher (博士后)
+      external_teacher: Externally engaged teacher (外聘教师)
+      summer: Summer-session student (暑期生)
+      alumni: Alumnus (校友)
+      green: Green-channel account (绿色通道)
+      outside: Cooperation and exchange (合作交流)
+      fszxjs: Affiliated-secondary-school teacher (附属中学教师)
+      freshman: Incoming student (新生)
+      team: Group account (集体账号) — not an identity type; appears only in the Profile structure
+  data_resources_account:
+    source: https://developer.sjtu.edu.cn/graphql/account.html
+    values:
+      faculty: Faculty and staff (教职工)
+      student: Student (学生)
+      yxy: Medical school faculty and staff (医学院教职工)
+      fsyyjzg: Affiliated-unit staff (附属单位职工) — note the code differs from the Open API's `fs`
+      vip: VIP
+      postphd: Postdoctoral researcher (博士后)
+      external_teacher: Externally engaged teacher (外聘教师)
+      summer: Summer-session student (暑期生)
+      team: Group account (集体账号)
+      schoolFellow: Alumnus (校友) — note the code differs from the Open API's `alumni`
+      green: Green-channel account (绿色通道)
+      outside: Cooperation and exchange (合作交流)
+      fszxjs: Affiliated-secondary-school teacher (附属中学教师)
+      freshman: Incoming student (新生)
+  divergence: >-
+    The same conceptual identity carries a different code on each platform — affiliated-unit staff
+    is `fs` on the Open API and `fsyyjzg` on Data Resources; an alumnus is `alumni` on the Open API
+    and `schoolFellow` on Data Resources. Any integrator joining the two platforms has to map them,
+    and nothing in either document says so.
+account_status:
+  source: https://developer.sjtu.edu.cn/api/profile.html
+  values:
+    正常: Normal
+    离职: Left employment — flagged by the HR system (faculty)
+    退休: Retired — flagged by the HR system (faculty)
+    退休返聘: Retired and re-engaged (faculty)
+    过期: Expired
+    离校: Left the university — flagged by the departure system (student, freshman)
+    其他: Other
+  note: >-
+    The documentation advises that student identity validity should be judged from the expiry date
+    rather than from the departure flag.
+document_types:
+  name: cardType
+  source: https://developer.sjtu.edu.cn/graphql/account.html
+  values:
+    '01': Resident identity card (身份证)
+    '02': Household register (户口簿)
+    '03': Passport (护照)
+    '04': Officer's card (军官证)
+    '05': Soldier's card (士兵证)
+    '06': Mainland travel permit for Hong Kong and Macao residents
+    '07': Mainland travel permit for Taiwan residents
+    '08': Temporary identity card
+    '09': Foreigner's residence permit
+    '10': Police officer's card
+    '11': Other document
+    '12': Residence permit for Hong Kong, Macao and Taiwan residents
+    '13': Foreign permanent residence card
+    '14': Foreigner's work permit
+    '15': Hong Kong, Macao and Taiwan identity card

@@ -1,0 +1,2889 @@
+openapi: 3.1.0
+info:
+  title: Shanghai Jiao Tong University Open API
+  version: 1.0.0
+  summary: The institution-operated REST API platform SJTU's Network & Information Center runs at api.sjtu.edu.cn.
+  description: 'The SJTU Open API platform (开放API) is operated by the Shanghai Jiao Tong University Network
+    and Information Center (上海交通大学网络信息中心) and documented on the university''s own developer portal at
+    https://developer.sjtu.edu.cn/api/overview.html. It is a REST API over HTTPS at https://api.sjtu.edu.cn,
+    protected end to end by OAuth 2.0 issued by the university''s own jAccount authorization server at
+    https://jaccount.sjtu.edu.cn/oauth2/.
+
+
+    Thirteen API families are documented: Profile, Task, Enterprise, File, Notification, Mail, Finance,
+    Education, Card, Unicode (Siyuan code), Barcode, Calendar and Signature. Together they cover the campus
+    identity directory, the campus card and its payment code, student timetables and grades, campus mail
+    and notifications, file storage with WPS preview/edit, and the finance appointment workflow — the
+    operational spine of a Chinese research university, published as a first-party API rather than bought
+    from a vendor.
+
+
+    Every response uses one common envelope: errno (0 on success), optional error, optional total and
+    nextToken for paging, and entities[] carrying the payload. Field release is scope-controlled — the
+    same Profile object returns more fields to a token holding privacy than to one holding basic.
+
+
+    Access is not open: an application must be registered through my.sjtu.edu.cn or the 交我办 app (Service
+    Hall -> Information Services -> jAccount interface application), which issues an appId and a 48-character
+    appSecret, and each scope must be separately approved. This document is DERIVED from the university''s
+    published documentation. It was not published by SJTU and no SJTU-authored OpenAPI was found.'
+  termsOfService: https://developer.sjtu.edu.cn/api/overview.html
+  contact:
+    name: Shanghai Jiao Tong University Network and Information Center
+    url: https://developer.sjtu.edu.cn/
+  x-operator: institution
+  x-provenance:
+    method: derived
+    source: https://developer.sjtu.edu.cn/api/list.html
+    generated: '2026-08-30'
+    note: Paths, methods, OAuth grants and per-operation scopes were read from the operation blocks the
+      SJTU developer portal renders on developer.sjtu.edu.cn/api/*.html. Envelope, error and Profile schemas
+      were read from developer.sjtu.edu.cn/api/overview.html and /api/profile.html. Liveness confirmed
+      by an unauthenticated GET of https://api.sjtu.edu.cn/v1/me/profile, which returned 403 {"errno":10002,"error":"Authentication
+      Failed.","total":0} on 2026-08-30.
+servers:
+- url: https://api.sjtu.edu.cn
+  description: SJTU Open API production host, operated by the SJTU Network and Information Center.
+tags:
+- name: Profile
+  description: User profile — identity, name, default identity type and organizational unit, with field-level
+    scope control.
+- name: Task
+  description: InfoPlus task centre — push workflow task updates into the campus task centre.
+- name: Enterprise
+  description: Enterprise directory — posts, identities, rights, organizational units and the academic
+    calendar.
+- name: File
+  description: Application file storage — upload, download, metadata, thumbnails and WPS preview/edit
+    links.
+- name: Notification
+  description: Campus notification delivery and read-state tracking, including Jiao-Wo-Ban (交我办) app pushes.
+- name: Mail
+  description: Campus mail — read, send and mark messages on the user's behalf.
+- name: Finance
+  description: Finance appointment workflow — submit, cancel, complete and query financial business items.
+- name: Education
+  description: Teaching records — lessons, student timetables, examinations and GPA.
+- name: Card
+  description: Campus card (一卡通) — account opening, balance, transactions, photo, top-up, freeze and transfer.
+- name: Unicode
+  description: Siyuan code (思源码) — the campus identity and payment QR code, its activation, payment codes
+    and transactions.
+- name: Barcode
+  description: Barcode and QR-code image rendering.
+- name: Calendar
+  description: Calendar event synchronisation into the campus calendar.
+- name: Signature
+  description: Digital document signing (e-signature).
+paths:
+  /v1/me/profile:
+    get:
+      summary: Get my user profile
+      description: 'Get my user profile. Documented as “查询我的用户信息” on the SJTU developer platform. Supported
+        OAuth 2.0 grants: authorizationCode. Covered by the SJTU Java API SDK.'
+      operationId: get_v1_me_profile
+      tags:
+      - Profile
+      security:
+      - jAccountOAuth2:
+        - basic
+        - essential
+        - profile
+        - privacy
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/profile/{jaccount}:
+    get:
+      summary: Get a specified user's profile
+      description: 'Get a specified user''s profile. Documented as “查询指定用户的信息” on the SJTU developer platform.
+        Supported OAuth 2.0 grants: authorizationCode, clientCredentials. Documented URL template: https://api.sjtu.edu.cn/v1/profile/{jaccount|userId}'
+      operationId: get_v1_profile_jaccount
+      tags:
+      - Profile
+      parameters:
+      - name: jaccount
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - basic
+        - essential
+        - profile
+        - privacy
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v2/task/message:
+    post:
+      summary: Send a task update message
+      description: 'Send a task update message. Documented as “发送任务更新消息” on the SJTU developer platform.
+        Supported OAuth 2.0 grants: clientCredentials. Covered by the SJTU Java API SDK.'
+      operationId: post_v2_task_message
+      tags:
+      - Task
+      security:
+      - jAccountOAuth2:
+        - tasks
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/enterprise/user/positions:
+    get:
+      summary: List a user's posts and identities
+      description: 'List a user''s posts and identities. Documented as “取用户的岗位、身份信息” on the SJTU developer
+        platform. Supported OAuth 2.0 grants: authorizationCode.'
+      operationId: get_v1_enterprise_user_positions
+      tags:
+      - Enterprise
+      security:
+      - jAccountOAuth2:
+        - basic
+        - essential
+        - profile
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/enterprise/user/rights:
+    get:
+      summary: Get a user's rights
+      description: 'Get a user''s rights. Documented as “取用户的权限” on the SJTU developer platform. Supported
+        OAuth 2.0 grants: authorizationCode, clientCredentials. Covered by the SJTU Java API SDK.'
+      operationId: get_v1_enterprise_user_rights
+      tags:
+      - Enterprise
+      parameters:
+      - name: account
+        in: query
+        required: false
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - basic
+        - essential
+        - privacy
+        - profile
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/enterprise/position/dept:post:biz/users:
+    get:
+      summary: List users holding a post
+      description: 'List users holding a post. Documented as “查询岗位中的用户信息” on the SJTU developer platform.
+        Supported OAuth 2.0 grants: clientCredentials.'
+      operationId: get_v1_enterprise_position_dept_post_biz_users
+      tags:
+      - Enterprise
+      security:
+      - jAccountOAuth2:
+        - basic
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/enterprise/position/dept:post/users:
+    put:
+      summary: Assign a post to a user
+      description: 'Assign a post to a user. Documented as “为用户配置岗位” on the SJTU developer platform. Supported
+        OAuth 2.0 grants: authorizationCode.'
+      operationId: put_v1_enterprise_position_dept_post_users
+      tags:
+      - Enterprise
+      parameters:
+      - name: code
+        in: query
+        required: false
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - profile
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+    delete:
+      summary: Revoke a user's post assignment
+      description: 'Revoke a user''s post assignment. Documented as “取消用户岗位授权” on the SJTU developer platform.
+        Supported OAuth 2.0 grants: authorizationCode.'
+      operationId: delete_v1_enterprise_position_dept_post_users
+      tags:
+      - Enterprise
+      parameters:
+      - name: code
+        in: query
+        required: false
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - profile
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/enterprise/organizes:
+    get:
+      summary: List organizational units
+      description: List organizational units. Documented as “查询部门” on the SJTU developer platform. Covered
+        by the SJTU Java API SDK.
+      operationId: get_v1_enterprise_organizes
+      tags:
+      - Enterprise
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/enterprise/calendar:
+    get:
+      summary: Get the academic calendar
+      description: Get the academic calendar. Documented as “查询校历” on the SJTU developer platform.
+      operationId: get_v1_enterprise_calendar
+      tags:
+      - Enterprise
+      parameters:
+      - name: from
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/file:
+    put:
+      summary: Upload a file
+      description: 'Upload a file. Documented as “上传文件” on the SJTU developer platform. Supported OAuth
+        2.0 grants: clientCredentials. Covered by the SJTU Java API SDK.'
+      operationId: put_v1_file
+      tags:
+      - File
+      security:
+      - jAccountOAuth2:
+        - storage
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/file/{id}:
+    get:
+      summary: Download a file
+      description: Download a file. Documented as “下载文件” on the SJTU developer platform.
+      operationId: get_v1_file_id
+      tags:
+      - File
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+    post:
+      summary: Replace a file
+      description: 'Replace a file. Documented as “修改文件” on the SJTU developer platform. Supported OAuth
+        2.0 grants: clientCredentials. Covered by the SJTU Java API SDK.'
+      operationId: post_v1_file_id
+      tags:
+      - File
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - storage
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/file/{id}/meta:
+    get:
+      summary: Get file metadata
+      description: 'Get file metadata. Documented as “获取文件信息” on the SJTU developer platform. Supported
+        OAuth 2.0 grants: clientCredentials. Covered by the SJTU Java API SDK.'
+      operationId: get_v1_file_id_meta
+      tags:
+      - File
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - storage
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+    post:
+      summary: Update file metadata
+      description: 'Update file metadata. Documented as “修改文件信息” on the SJTU developer platform. Supported
+        OAuth 2.0 grants: clientCredentials. Covered by the SJTU Java API SDK.'
+      operationId: post_v1_file_id_meta
+      tags:
+      - File
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - storage
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/file/{id}/thumb/{size}:
+    get:
+      summary: Download a thumbnail
+      description: Download a thumbnail. Documented as “下载缩略图” on the SJTU developer platform.
+      operationId: get_v1_file_id_thumb_size
+      tags:
+      - File
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: size
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/file/preview:
+    get:
+      summary: Get a WPS preview link
+      description: 'Get a WPS preview link. Documented as “获取WPS预览链接” on the SJTU developer platform.
+        Supported OAuth 2.0 grants: clientCredentials.'
+      operationId: get_v1_file_preview
+      tags:
+      - File
+      security:
+      - jAccountOAuth2:
+        - storage
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/file/edit:
+    get:
+      summary: Get a WPS edit link
+      description: 'Get a WPS edit link. Documented as “获取WPS编辑链接” on the SJTU developer platform. Supported
+        OAuth 2.0 grants: clientCredentials.'
+      operationId: get_v1_file_edit
+      tags:
+      - File
+      security:
+      - jAccountOAuth2:
+        - storage
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/notification:
+    put:
+      summary: Send a notification
+      description: 'Send a notification. Documented as “发送通知” on the SJTU developer platform. Supported
+        OAuth 2.0 grants: password. Covered by the SJTU Java API SDK.'
+      operationId: put_v1_notification
+      tags:
+      - Notification
+      security:
+      - jAccountOAuth2:
+        - send_notification
+        - send_app_notification
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/notification/status:
+    get:
+      summary: Get notification status
+      description: 'Get notification status. Documented as “获取通知状态” on the SJTU developer platform. Supported
+        OAuth 2.0 grants: clientCredentials.'
+      operationId: get_v1_notification_status
+      tags:
+      - Notification
+      parameters:
+      - name: id
+        in: query
+        required: false
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - notifications
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+    post:
+      summary: Mark notification status
+      description: 'Mark notification status. Documented as “标记通知状态” on the SJTU developer platform. Supported
+        OAuth 2.0 grants: clientCredentials.'
+      operationId: post_v1_notification_status
+      tags:
+      - Notification
+      security:
+      - jAccountOAuth2:
+        - modify_notification
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/mails:
+    get:
+      summary: List mail
+      description: 'List mail. Documented as “取邮件” on the SJTU developer platform. Supported OAuth 2.0
+        grants: authorizationCode. Documented URL template: https://api.sjtu.edu.cn/v1/mails/[{unread|read}]'
+      operationId: get_v1_mails
+      tags:
+      - Mail
+      security:
+      - jAccountOAuth2:
+        - read_mails
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/mails/{state}:
+    get:
+      summary: List mail
+      description: 'List mail. Documented as “取邮件” on the SJTU developer platform. Supported OAuth 2.0
+        grants: authorizationCode. Documented URL template: https://api.sjtu.edu.cn/v1/mails/[{unread|read}]'
+      operationId: get_v1_mails_state
+      tags:
+      - Mail
+      parameters:
+      - name: state
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - read_mails
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/mail:
+    put:
+      summary: Send mail
+      description: 'Send mail. Documented as “发邮件” on the SJTU developer platform. Supported OAuth 2.0
+        grants: authorizationCode, password. Covered by the SJTU Java API SDK.'
+      operationId: put_v1_mail
+      tags:
+      - Mail
+      security:
+      - jAccountOAuth2:
+        - send_mail
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/mail/{mailId}:
+    post:
+      summary: Mark a mail's read state
+      description: 'Mark a mail''s read state. Documented as “标记邮件状态” on the SJTU developer platform.
+        Supported OAuth 2.0 grants: authorizationCode, password. Covered by the SJTU Java API SDK.'
+      operationId: post_v1_mail_mailId
+      tags:
+      - Mail
+      parameters:
+      - name: mailId
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - send_mail
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/finance/appointments/{businessType}/{businessNo}:
+    get:
+      summary: Get one finance appointment
+      description: 'Get one finance appointment. Documented as “获取单个业务详情” on the SJTU developer platform.
+        Supported OAuth 2.0 grants: clientCredentials. Covered by the SJTU Java API SDK.'
+      operationId: get_v1_finance_appointments_businessType_businessNo
+      tags:
+      - Finance
+      parameters:
+      - name: businessType
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: businessNo
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - connect_finance
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+    put:
+      summary: Submit a new finance appointment
+      description: 'Submit a new finance appointment. Documented as “提交新的业务” on the SJTU developer platform.
+        Supported OAuth 2.0 grants: clientCredentials. Covered by the SJTU Java API SDK.'
+      operationId: put_v1_finance_appointments_businessType_businessNo
+      tags:
+      - Finance
+      parameters:
+      - name: businessType
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: businessNo
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - connect_finance
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+    delete:
+      summary: Cancel a finance appointment
+      description: 'Cancel a finance appointment. Documented as “撤销业务” on the SJTU developer platform.
+        Supported OAuth 2.0 grants: clientCredentials. Covered by the SJTU Java API SDK.'
+      operationId: delete_v1_finance_appointments_businessType_businessNo
+      tags:
+      - Finance
+      parameters:
+      - name: businessType
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: businessNo
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - connect_finance
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+    post:
+      summary: Mark a finance appointment complete
+      description: 'Mark a finance appointment complete. Documented as “标记业务处理完成” on the SJTU developer
+        platform. Supported OAuth 2.0 grants: clientCredentials. Covered by the SJTU Java API SDK.'
+      operationId: post_v1_finance_appointments_businessType_businessNo
+      tags:
+      - Finance
+      parameters:
+      - name: businessType
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: businessNo
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - connect_finance
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/finance/appointments/{businessType}:
+    get:
+      summary: List completed, cancelled or returned finance appointments
+      description: 'List completed, cancelled or returned finance appointments. Documented as “获取已完成或已撤销/退回的业务”
+        on the SJTU developer platform. Supported OAuth 2.0 grants: clientCredentials. Covered by the
+        SJTU Java API SDK.'
+      operationId: get_v1_finance_appointments_businessType
+      tags:
+      - Finance
+      parameters:
+      - name: businessType
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - connect_finance
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/lesson/{code}:
+    get:
+      summary: Get a teaching-class (lesson) record
+      description: 'Get a teaching-class (lesson) record. Documented as “获取教学班信息” on the SJTU developer
+        platform. Supported OAuth 2.0 grants: authorizationCode. Documented URL template: https://api.sjtu.edu.cn/v1/lesson/{code|bsid}'
+      operationId: get_v1_lesson_code
+      tags:
+      - Education
+      parameters:
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - lessons
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/me/lessons:
+    get:
+      summary: Get the signed-in student's timetable
+      description: 'Get the signed-in student''s timetable. Documented as “获取学生课表” on the SJTU developer
+        platform. Supported OAuth 2.0 grants: authorizationCode. Documented URL template: https://api.sjtu.edu.cn/v1/me/lessons[/{term}]'
+      operationId: get_v1_me_lessons
+      tags:
+      - Education
+      security:
+      - jAccountOAuth2:
+        - lessons
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/me/lessons/{term}:
+    get:
+      summary: Get the signed-in student's timetable
+      description: 'Get the signed-in student''s timetable. Documented as “获取学生课表” on the SJTU developer
+        platform. Supported OAuth 2.0 grants: authorizationCode. Documented URL template: https://api.sjtu.edu.cn/v1/me/lessons[/{term}]'
+      operationId: get_v1_me_lessons_term
+      tags:
+      - Education
+      parameters:
+      - name: term
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - lessons
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/me/examinations:
+    get:
+      summary: Get the signed-in student's examinations
+      description: 'Get the signed-in student''s examinations. Documented as “获取学生考试信息” on the SJTU developer
+        platform. Supported OAuth 2.0 grants: authorizationCode. Documented URL template: https://api.sjtu.edu.cn/v1/me/examinations[/{term}]'
+      operationId: get_v1_me_examinations
+      tags:
+      - Education
+      security:
+      - jAccountOAuth2:
+        - exams
+        - scores
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/me/examinations/{term}:
+    get:
+      summary: Get the signed-in student's examinations
+      description: 'Get the signed-in student''s examinations. Documented as “获取学生考试信息” on the SJTU developer
+        platform. Supported OAuth 2.0 grants: authorizationCode. Documented URL template: https://api.sjtu.edu.cn/v1/me/examinations[/{term}]'
+      operationId: get_v1_me_examinations_term
+      tags:
+      - Education
+      parameters:
+      - name: term
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - exams
+        - scores
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/gpa:
+    get:
+      summary: Get the signed-in student's GPA
+      description: 'Get the signed-in student''s GPA. Documented as “获取学生绩点信息” on the SJTU developer platform.
+        Supported OAuth 2.0 grants: authorizationCode.'
+      operationId: get_v1_gpa
+      tags:
+      - Education
+      security:
+      - jAccountOAuth2:
+        - scores
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/me/card:
+    get:
+      summary: Get my campus-card record
+      description: 'Get my campus-card record. Documented as “获取校园卡信息” on the SJTU developer platform.
+        Supported OAuth 2.0 grants: authorizationCode.'
+      operationId: get_v1_me_card
+      tags:
+      - Card
+      security:
+      - jAccountOAuth2:
+        - card_info
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+    put:
+      summary: Open a campus-card account
+      description: 'Open a campus-card account. Documented as “校园卡开户” on the SJTU developer platform.
+        Supported OAuth 2.0 grants: authorizationCode.'
+      operationId: put_v1_me_card
+      tags:
+      - Card
+      security:
+      - jAccountOAuth2:
+        - manage_card
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+    post:
+      summary: Set campus-card information and state
+      description: 'Set campus-card information and state. Documented as “设置卡信息和状态” on the SJTU developer
+        platform. Supported OAuth 2.0 grants: authorizationCode.'
+      operationId: post_v1_me_card
+      tags:
+      - Card
+      security:
+      - jAccountOAuth2:
+        - write_card_info
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/me/card/user:
+    get:
+      summary: Get campus-card identity information
+      description: 'Get campus-card identity information. Documented as “查询校园卡身份信息” on the SJTU developer
+        platform. Supported OAuth 2.0 grants: authorizationCode.'
+      operationId: get_v1_me_card_user
+      tags:
+      - Card
+      security:
+      - jAccountOAuth2:
+        - manage_card
+        - card_info
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/me/card/transactions:
+    get:
+      summary: List campus-card transactions
+      description: 'List campus-card transactions. Documented as “获取交易记录信息” on the SJTU developer platform.
+        Supported OAuth 2.0 grants: authorizationCode.'
+      operationId: get_v1_me_card_transactions
+      tags:
+      - Card
+      security:
+      - jAccountOAuth2:
+        - card_transactions
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/me/card/photo:
+    get:
+      summary: Get the campus-card photo
+      description: 'Get the campus-card photo. Documented as “获取校园卡照片” on the SJTU developer platform.
+        Supported OAuth 2.0 grants: authorizationCode.'
+      operationId: get_v1_me_card_photo
+      tags:
+      - Card
+      security:
+      - jAccountOAuth2:
+        - privacy
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+    post:
+      summary: Update the campus-card photo
+      description: 'Update the campus-card photo. Documented as “更新校园卡照片” on the SJTU developer platform.
+        Supported OAuth 2.0 grants: authorizationCode.'
+      operationId: post_v1_me_card_photo
+      tags:
+      - Card
+      security:
+      - jAccountOAuth2:
+        - write_card_info
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/me/card/recharge/{id}:
+    get:
+      summary: Get a top-up request
+      description: 'Get a top-up request. Documented as “查询充值请求” on the SJTU developer platform. Supported
+        OAuth 2.0 grants: authorizationCode.'
+      operationId: get_v1_me_card_recharge_id
+      tags:
+      - Card
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - write_card_info
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/me/card/recharge:
+    post:
+      summary: Submit a top-up request
+      description: 'Submit a top-up request. Documented as “提交充值请求” on the SJTU developer platform. Supported
+        OAuth 2.0 grants: authorizationCode.'
+      operationId: post_v1_me_card_recharge
+      tags:
+      - Card
+      security:
+      - jAccountOAuth2:
+        - write_card_info
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/card/foundLostCard:
+    post:
+      summary: Report a found lost card
+      description: 'Report a found lost card. Documented as “提交拾卡信息” on the SJTU developer platform. Supported
+        OAuth 2.0 grants: clientCredentials.'
+      operationId: post_v1_card_foundLostCard
+      tags:
+      - Card
+      security:
+      - jAccountOAuth2:
+        - card_info
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/card:
+    get:
+      summary: Look up a card by staff/student number or physical card number
+      description: 'Look up a card by staff/student number or physical card number. Documented as “根据学工号或物理卡号查询卡信息”
+        on the SJTU developer platform. Supported OAuth 2.0 grants: clientCredentials.'
+      operationId: get_v1_card
+      tags:
+      - Card
+      security:
+      - jAccountOAuth2:
+        - card_info
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+    post:
+      summary: Freeze or unfreeze a campus card
+      description: 'Freeze or unfreeze a campus card. Documented as “冻结解冻校园卡” on the SJTU developer platform.
+        Supported OAuth 2.0 grants: clientCredentials.'
+      operationId: post_v1_card
+      tags:
+      - Card
+      security:
+      - jAccountOAuth2:
+        - write_card_info
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/me/card/transfer:
+    get:
+      summary: Get a card balance-transfer order
+      description: 'Get a card balance-transfer order. Documented as “查询校园卡余额转结订单” on the SJTU developer
+        platform. Supported OAuth 2.0 grants: authorizationCode.'
+      operationId: get_v1_me_card_transfer
+      tags:
+      - Card
+      security:
+      - jAccountOAuth2:
+        - write_card_info
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+    post:
+      summary: Transfer a campus-card balance
+      description: 'Transfer a campus-card balance. Documented as “校园卡余额转结” on the SJTU developer platform.
+        Supported OAuth 2.0 grants: authorizationCode.'
+      operationId: post_v1_me_card_transfer
+      tags:
+      - Card
+      security:
+      - jAccountOAuth2:
+        - write_card_info
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/unicode:
+    get:
+      summary: Validate a Siyuan code
+      description: 'Validate a Siyuan code. Documented as “思源码校验” on the SJTU developer platform. Supported
+        OAuth 2.0 grants: clientCredentials.'
+      operationId: get_v1_unicode
+      tags:
+      - Unicode
+      security:
+      - jAccountOAuth2:
+        - unicode
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+    post:
+      summary: Activate a Siyuan code
+      description: 'Activate a Siyuan code. Documented as “开通思源码” on the SJTU developer platform. Supported
+        OAuth 2.0 grants: authorizationCode.'
+      operationId: post_v1_unicode
+      tags:
+      - Unicode
+      security:
+      - jAccountOAuth2:
+        - unicode
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/unicode/identity:
+    get:
+      summary: Get the identity code and Siyuan activation state
+      description: 'Get the identity code and Siyuan activation state. Documented as “获取身份码、获取思源码开通状态”
+        on the SJTU developer platform. Supported OAuth 2.0 grants: authorizationCode.'
+      operationId: get_v1_unicode_identity
+      tags:
+      - Unicode
+      security:
+      - jAccountOAuth2:
+        - unicode
+        - card_info
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/unicode/identity/advertising:
+    get:
+      summary: Get promotional-slot content
+      description: 'Get promotional-slot content. Documented as “获取运营位信息” on the SJTU developer platform.
+        Supported OAuth 2.0 grants: authorizationCode.'
+      operationId: get_v1_unicode_identity_advertising
+      tags:
+      - Unicode
+      security:
+      - jAccountOAuth2:
+        - unicode
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/unicode/pay:
+    get:
+      summary: Get a payment code
+      description: 'Get a payment code. Documented as “获取支付码” on the SJTU developer platform. Supported
+        OAuth 2.0 grants: authorizationCode.'
+      operationId: get_v1_unicode_pay
+      tags:
+      - Unicode
+      security:
+      - jAccountOAuth2:
+        - unicode
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/unicode/parameters:
+    get:
+      summary: Get payment-code integration parameters
+      description: 'Get payment-code integration parameters. Documented as “获取支付码对接参数” on the SJTU developer
+        platform. Supported OAuth 2.0 grants: authorizationCode.'
+      operationId: get_v1_unicode_parameters
+      tags:
+      - Unicode
+      security:
+      - jAccountOAuth2:
+        - unicode
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/unicode/transactions:
+    get:
+      summary: List Siyuan-code transactions
+      description: 'List Siyuan-code transactions. Documented as “查询交易记录” on the SJTU developer platform.
+        Supported OAuth 2.0 grants: authorizationCode.'
+      operationId: get_v1_unicode_transactions
+      tags:
+      - Unicode
+      security:
+      - jAccountOAuth2:
+        - card_transactions
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/barcode/qr/{fileName}.{imageType}:
+    get:
+      summary: Render a QR code
+      description: Render a QR code. Documented as “二维码” on the SJTU developer platform.
+      operationId: get_v1_barcode_qr_fileName_imageType
+      tags:
+      - Barcode
+      parameters:
+      - name: fileName
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: imageType
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/barcode/{type}/{value}.{imageType}:
+    get:
+      summary: Render a barcode
+      description: Render a barcode. Documented as “条形码” on the SJTU developer platform.
+      operationId: get_v1_barcode_type_value_imageType
+      tags:
+      - Barcode
+      parameters:
+      - name: type
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: value
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: imageType
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/calendar/event:
+    post:
+      summary: Create a calendar event
+      description: 'Create a calendar event. Documented as “创建日程安排” on the SJTU developer platform. Supported
+        OAuth 2.0 grants: clientCredentials.'
+      operationId: post_v1_calendar_event
+      tags:
+      - Calendar
+      security:
+      - jAccountOAuth2:
+        - calendar
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/calendar/event/{id}:
+    delete:
+      summary: Delete a calendar event
+      description: 'Delete a calendar event. Documented as “删除日程安排” on the SJTU developer platform. Supported
+        OAuth 2.0 grants: clientCredentials.'
+      operationId: delete_v1_calendar_event_id
+      tags:
+      - Calendar
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - calendar
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+  /v1/signature/{eSignCode}:
+    post:
+      summary: Apply a digital signature to a document
+      description: 'Apply a digital signature to a document. Documented as “签章文件” on the SJTU developer
+        platform. Supported OAuth 2.0 grants: clientCredentials.'
+      operationId: post_v1_signature_eSignCode
+      tags:
+      - Signature
+      parameters:
+      - name: eSignCode
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - jAccountOAuth2:
+        - signature
+      responses:
+        '200':
+          description: Success. errno is 0 and the payload is carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed (errno 10002 / 10010).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '500':
+          description: Internal Server Error.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+components:
+  securitySchemes:
+    jAccountOAuth2:
+      type: oauth2
+      description: 'OAuth 2.0 issued by SJTU''s own jAccount authorization server. The issuer publishes
+        OpenID Connect discovery at https://jaccount.sjtu.edu.cn/oauth2/.well-known/openid-configuration.
+        Tokens may be sent as the access_token query/body parameter or as an Authorization: Bearer header
+        (RFC 6750). Which grant an operation accepts is stated in its description.'
+      flows:
+        authorizationCode:
+          authorizationUrl: https://jaccount.sjtu.edu.cn/oauth2/authorize
+          tokenUrl: https://jaccount.sjtu.edu.cn/oauth2/token
+          scopes:
+            basic: Read the user's identifier (system id and jAccount name) and real name.
+            essential: Read basic identifier and name plus the bound identity (identity id, identity type,
+              and owning department/school).
+            profile: Read fuller user detail — basic identifier, name, account information, mobile number,
+              usual email address.
+            unicode: Activate, retrieve or validate the Siyuan code (思源码).
+            tasks: Read actionable/pending/in-progress/completed task lists; read or aggregate manageable
+              workflows, instances and tasks.
+            messages: Read the user's messages.
+            notifications: Read the user's system notifications.
+            privacy: Read the user's detailed information, including personal ID-document details and
+              date of birth.
+            introspect: Introspect an OAuth token. API-development use only.
+            read_apps: Read application registration information.
+            write_apps: Create and modify application registration information.
+            exchange_data: Data exchange — the scope the Data Resources APIs on graphql.sjtu.edu.cn require.
+            signature: Obtain a digital signature.
+            manage_card: Campus-card management, such as account opening.
+            send_app_notification: Send a Jiao-Wo-Ban (交我办) app notification to a user.
+            send_notification: Send a notification to a user.
+            read_mails: Read the user's mail.
+            send_mail: Send mail on the user's behalf, or change a message's read state.
+            storage: Full control of the application's own unstructured storage.
+            modify_notification: Modify the state of the application's own notifications.
+            lessons: Read the user's lesson information.
+            classes: Read the user's timetable (including courses).
+            exams: Read the user's examination information.
+            scores: Read the user's examination results.
+            students_list: Read the enrolled-student roster for a class (teacher).
+            card_info: Read the user's campus-card information.
+            card_transactions: Read the user's campus-card transaction records.
+            write_card_info: Campus-card write operations — change the query password, report a card lost,
+              top up from a bound bank card.
+            income: Query the user's income information.
+            create_jaccount: Create a jAccount account.
+            edit_jaccount: Modify a jAccount account.
+            net_service_info: Read all personal network-service information for a specified user.
+            connect_wechat: Bind a jAccount to a WeChat account.
+            connect_shmec: Bind a jAccount to a Shanghai Municipal Education Commission account.
+            print: Self-service printing.
+            connect_finance: Integrate with the finance appointment system.
+            student_affairs: Retrieve student-affairs information.
+            bus: Read campus-bus and inter-campus shuttle timetables and real-time information.
+            calendar: Synchronise calendar information.
+        clientCredentials:
+          tokenUrl: https://jaccount.sjtu.edu.cn/oauth2/token
+          scopes:
+            basic: Read the user's identifier (system id and jAccount name) and real name.
+            essential: Read basic identifier and name plus the bound identity (identity id, identity type,
+              and owning department/school).
+            profile: Read fuller user detail — basic identifier, name, account information, mobile number,
+              usual email address.
+            unicode: Activate, retrieve or validate the Siyuan code (思源码).
+            tasks: Read actionable/pending/in-progress/completed task lists; read or aggregate manageable
+              workflows, instances and tasks.
+            messages: Read the user's messages.
+            notifications: Read the user's system notifications.
+            privacy: Read the user's detailed information, including personal ID-document details and
+              date of birth.
+            introspect: Introspect an OAuth token. API-development use only.
+            read_apps: Read application registration information.
+            write_apps: Create and modify application registration information.
+            exchange_data: Data exchange — the scope the Data Resources APIs on graphql.sjtu.edu.cn require.
+            signature: Obtain a digital signature.
+            manage_card: Campus-card management, such as account opening.
+            send_app_notification: Send a Jiao-Wo-Ban (交我办) app notification to a user.
+            send_notification: Send a notification to a user.
+            read_mails: Read the user's mail.
+            send_mail: Send mail on the user's behalf, or change a message's read state.
+            storage: Full control of the application's own unstructured storage.
+            modify_notification: Modify the state of the application's own notifications.
+            lessons: Read the user's lesson information.
+            classes: Read the user's timetable (including courses).
+            exams: Read the user's examination information.
+            scores: Read the user's examination results.
+            students_list: Read the enrolled-student roster for a class (teacher).
+            card_info: Read the user's campus-card information.
+            card_transactions: Read the user's campus-card transaction records.
+            write_card_info: Campus-card write operations — change the query password, report a card lost,
+              top up from a bound bank card.
+            income: Query the user's income information.
+            create_jaccount: Create a jAccount account.
+            edit_jaccount: Modify a jAccount account.
+            net_service_info: Read all personal network-service information for a specified user.
+            connect_wechat: Bind a jAccount to a WeChat account.
+            connect_shmec: Bind a jAccount to a Shanghai Municipal Education Commission account.
+            print: Self-service printing.
+            connect_finance: Integrate with the finance appointment system.
+            student_affairs: Retrieve student-affairs information.
+            bus: Read campus-bus and inter-campus shuttle timetables and real-time information.
+            calendar: Synchronise calendar information.
+        password:
+          tokenUrl: https://jaccount.sjtu.edu.cn/oauth2/token
+          scopes:
+            basic: Read the user's identifier (system id and jAccount name) and real name.
+            essential: Read basic identifier and name plus the bound identity (identity id, identity type,
+              and owning department/school).
+            profile: Read fuller user detail — basic identifier, name, account information, mobile number,
+              usual email address.
+            unicode: Activate, retrieve or validate the Siyuan code (思源码).
+            tasks: Read actionable/pending/in-progress/completed task lists; read or aggregate manageable
+              workflows, instances and tasks.
+            messages: Read the user's messages.
+            notifications: Read the user's system notifications.
+            privacy: Read the user's detailed information, including personal ID-document details and
+              date of birth.
+            introspect: Introspect an OAuth token. API-development use only.
+            read_apps: Read application registration information.
+            write_apps: Create and modify application registration information.
+            exchange_data: Data exchange — the scope the Data Resources APIs on graphql.sjtu.edu.cn require.
+            signature: Obtain a digital signature.
+            manage_card: Campus-card management, such as account opening.
+            send_app_notification: Send a Jiao-Wo-Ban (交我办) app notification to a user.
+            send_notification: Send a notification to a user.
+            read_mails: Read the user's mail.
+            send_mail: Send mail on the user's behalf, or change a message's read state.
+            storage: Full control of the application's own unstructured storage.
+            modify_notification: Modify the state of the application's own notifications.
+            lessons: Read the user's lesson information.
+            classes: Read the user's timetable (including courses).
+            exams: Read the user's examination information.
+            scores: Read the user's examination results.
+            students_list: Read the enrolled-student roster for a class (teacher).
+            card_info: Read the user's campus-card information.
+            card_transactions: Read the user's campus-card transaction records.
+            write_card_info: Campus-card write operations — change the query password, report a card lost,
+              top up from a bound bank card.
+            income: Query the user's income information.
+            create_jaccount: Create a jAccount account.
+            edit_jaccount: Modify a jAccount account.
+            net_service_info: Read all personal network-service information for a specified user.
+            connect_wechat: Bind a jAccount to a WeChat account.
+            connect_shmec: Bind a jAccount to a Shanghai Municipal Education Commission account.
+            print: Self-service printing.
+            connect_finance: Integrate with the finance appointment system.
+            student_affairs: Retrieve student-affairs information.
+            bus: Read campus-bus and inter-campus shuttle timetables and real-time information.
+            calendar: Synchronise calendar information.
+  schemas:
+    Envelope:
+      type: object
+      description: The common response envelope every SJTU open API returns.
+      properties:
+        errno:
+          type: integer
+          description: Error code. 0 means the call succeeded.
+          example: 0
+        error:
+          type: string
+          description: Optional error message.
+          example: success
+        total:
+          type: integer
+          description: Optional; present when paging. Total number of matching records, so total >= entities.length.
+        nextToken:
+          type: string
+          description: Optional; present when paging. Pass back as pageToken to fetch the next page. Absent
+            on the last page.
+        entities:
+          type: array
+          description: Returned objects. Length 0 when there is no object; a single object is at entities[0].
+          items:
+            type: object
+      required:
+      - errno
+    Error:
+      type: object
+      description: Error payload. errno carries the SJTU API error code; see errors/shanghai-jiao-tong-university-errors.yml.
+      properties:
+        errno:
+          type: integer
+          example: 10002
+        error:
+          type: string
+          example: Authentication Failed.
+        total:
+          type: integer
+          example: 0
+      required:
+      - errno
+    Profile:
+      type: object
+      title: Profile
+      description: jAccount user profile. Each field is released only to tokens holding one of the scopes
+        named in its description — field-level scope control is enforced by the platform.
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Natural-person identifier (scopes basic, essential, profile, privacy). Absent for
+            non-personal accounts such as group accounts. Multiple accounts for the same natural person
+            share this id.
+        account:
+          type: string
+          description: jAccount account name (basic, essential, profile, privacy).
+        name:
+          type: string
+          description: Real name (basic, essential, profile, privacy).
+        kind:
+          type: string
+          enum:
+          - canvas.profile
+          description: Object type marker (basic, essential, profile, privacy).
+        code:
+          type: string
+          description: Student or staff number of the default identity (essential, profile, privacy).
+        userType:
+          type: string
+          description: Identity type of the default identity (essential, profile, privacy). See vocabulary/shanghai-jiao-tong-university-vocabulary.yml.
+          enum:
+          - faculty
+          - student
+          - yxy
+          - fs
+          - vip
+          - postphd
+          - external_teacher
+          - summer
+          - alumni
+          - green
+          - outside
+          - fszxjs
+          - freshman
+          - team
+        organize:
+          type: object
+          description: Organizational unit of the default identity (essential, profile, privacy).
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+        topOrganize:
+          type: object
+          description: Second-level unit owning the default identity (essential, profile, privacy). The
+            docs warn against persisting this value.
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+        classNo:
+          type: string
+          description: Class number when userType is student (profile, privacy).
+        avatars:
+          type: object
+          description: Avatar images (privacy).
+          properties:
+            uriTiny:
+              type: string
+              format: uri
+            uriNormal:
+              type: string
+              format: uri
+        timeZone:
+          type: integer
+          description: Time-zone offset.
+externalDocs:
+  description: SJTU Developer Platform — Open API documentation
+  url: https://developer.sjtu.edu.cn/api/overview.html

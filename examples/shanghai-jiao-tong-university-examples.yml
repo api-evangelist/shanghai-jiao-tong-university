@@ -1,0 +1,189 @@
+generated: '2026-08-30'
+method: searched
+source: https://developer.sjtu.edu.cn/
+x-operator: institution
+note: >-
+  Request and response examples read verbatim from SJTU's own developer-portal documentation, plus
+  three responses we captured live from SJTU hosts on 2026-08-30. The live captures are marked
+  method: probed and are the evidence that these are running services rather than documented
+  intentions. Placeholder values (tokenxxx, xxxxxxx, 张三) are the university's own.
+examples:
+- name: Authorization-code authentication request
+  method: searched
+  source: https://developer.sjtu.edu.cn/auth/oidc.html
+  request: |
+    GET /oauth2/authorize?response_type=code&scope=openid&client_id=s6BhdRkqt3&redirect_uri=https%3A%2F%2Fclient.example.org%2Fcb HTTP/1.1
+    Host: jaccount.sjtu.edu.cn
+- name: jAccount ID token payload
+  method: searched
+  source: https://developer.sjtu.edu.cn/auth/oidc.html
+  response: |
+    {
+      "iss": "https://jaccount.sjtu.edu.cn/oauth2/",
+      "sub": "test-user",
+      "aud": "s6BhdRkqt3",
+      "nonce": "n-0S6_WzA2Mj",
+      "exp": 1311281970,
+      "iat": 1311280970,
+      "name": "张三",
+      "code": "123456",
+      "type": "student"
+    }
+  note: >-
+    sub is the jAccount name, code is the default identity's student/staff number, and type is the
+    default identity type. All three are SJTU claims on top of standard OIDC.
+- name: Bearer token in the Authorization header
+  method: searched
+  source: https://developer.sjtu.edu.cn/api/overview.html
+  request: |
+    GET /v1/me/profile HTTP/1.1
+    Host: api.sjtu.edu.cn
+    Authorization: Bearer tokenxxx
+- name: Token as a query parameter
+  method: searched
+  source: https://developer.sjtu.edu.cn/api/overview.html
+  request: |
+    GET /v1/me/profile?access_token=tokenxxx HTTP/1.1
+    Host: api.sjtu.edu.cn
+- name: Successful profile response
+  method: searched
+  source: https://developer.sjtu.edu.cn/api/overview.html
+  response: |
+    HTTP/1.1 200 OK
+    Content-Type: application/json;charset=UTF-8
+
+    {
+      "errno": 0,
+      "error": "success",
+      "total": 0,
+      "entities": [{
+        "id": "A0000000-1111-2222-3333-012345678901",
+        "account": "testprofile",
+        "name": "张三",
+        "kind": "canvas.profile",
+        "timeZone": 0
+      }]
+    }
+- name: Failed call that still returns HTTP 200
+  method: searched
+  source: https://developer.sjtu.edu.cn/api/overview.html
+  response: |
+    HTTP/1.1 200
+    Content-Type: application/json;charset=UTF-8
+
+    {
+      "errno": 10001,
+      "error": "BAD_PARAMETERS\n\nMORE_INFORMATION:phones is required",
+      "total": 0
+    }
+  note: >-
+    The integration hazard on this platform. A client must branch on errno, not on the HTTP status.
+- name: Send a notification
+  method: searched
+  source: https://developer.sjtu.edu.cn/api/overview.html
+  request: |
+    PUT https://api.sjtu.edu.cn/v1/notification HTTP/1.1
+    Content-Type: application/json
+
+    {
+      "name": "邮件标题",
+      "content": "邮件内容",
+      "emails": ["yech@sjtu.edu.cn"],
+      "channels": ["email"]
+    }
+- name: Paged collection response
+  method: searched
+  source: https://developer.sjtu.edu.cn/api/overview.html
+  response: |
+    {
+      "errno": 0,
+      "error": "Succeed.",
+      "total": 20,
+      "nextToken": "3A4bz-e",
+      "entities": [
+        { "id": "100001", "name": "网络信息中心" },
+        { "id": "100002", "name": "网络信息中心开发部" },
+        { "id": "100003", "name": "Z07037XX班" },
+        { "id": "100004", "name": "2011年度网球初级班" },
+        { "id": "100005", "name": "我的同事" }
+      ]
+    }
+  note: 'Next page: GET https://api.sjtu.edu.cn/v1/me/circles?pageToken=3A4bz-e&limit=5'
+- name: Data Resources paper query
+  method: searched
+  source: https://developer.sjtu.edu.cn/graphql/paper.html
+  request: |
+    GET /v1/paper/info?access_token=token&userId=99999&first=1&offset=200 HTTP/1.1
+    Host: graphql.sjtu.edu.cn
+- name: Data Resources account record
+  method: searched
+  source: https://developer.sjtu.edu.cn/graphql/overview.html
+  response: |
+    {
+      "accountNo": "zhangsan",
+      "guid": "28A42245-7435-499C-B2B7-xxxxxxx",
+      "displayName": "张三",
+      "accountStatus": "正常",
+      "identityExpireDate": "2023-07-31",
+      "userStyle": "faculty",
+      "userId": "xxxxx",
+      "cardType": "01",
+      "cardNo": "31011119920311xxxx",
+      "telephone": "",
+      "email": "testprofile@sjtu.edu.cn",
+      "topOrganizeId": "40100",
+      "topOrganizeName": "网络信息中心",
+      "timestamp": "2022-08-19 00:00:00",
+      "relationList": [{
+        "userStyle": "faculty",
+        "userId": "xxxxx",
+        "expireDate": "2023-07-31",
+        "cardType": "01",
+        "cardNo": "31011119920311xxxx",
+        "topOrganizeId": "40100",
+        "topOrganizeName": "网络信息中心"
+      }]
+    }
+- name: Legacy GraphQL query (superseded)
+  method: searched
+  source: https://developer.sjtu.edu.cn/graphql/graphql.html
+  request: |
+    { tm_class(first: 1, offset: 10, filter: {name: {eq: "123"}}) { num name id } }
+  note: >-
+    The 老版本 (old version) Data Resources interface, POSTed to https://graphql.sjtu.edu.cn/graphql
+    as {"query": "..."}. Every current data-resource page now documents REST GETs under
+    https://graphql.sjtu.edu.cn/v1 instead. Kept here because the API Evangelist profile of SJTU
+    described only this form until 2026-08-30.
+- name: LIVE — unauthenticated call to the Open API gateway
+  method: probed
+  probed: '2026-08-30'
+  request: |
+    GET https://api.sjtu.edu.cn/v1/me/profile
+  response: |
+    HTTP/1.1 403 Forbidden
+
+    {"errno":10002,"error":"Authentication Failed.","total":0}
+  note: The gateway is live and enforcing OAuth. This is the documented errno 10002.
+- name: LIVE — unparameterised call to the authorize endpoint
+  method: probed
+  probed: '2026-08-30'
+  request: |
+    GET https://jaccount.sjtu.edu.cn/oauth2/authorize
+  response: |
+    HTTP/1.1 400 Bad Request
+
+    {"error":"invalid_request","error_description":"Missing response_type parameter value"}
+  note: A correct RFC 6749 error response from a real authorization server.
+- name: LIVE — Data Resources host from off campus
+  method: probed
+  probed: '2026-08-30'
+  request: |
+    GET https://graphql.sjtu.edu.cn/v1/account/info
+  response: |
+    HTTP/1.1 302 Found
+    Location: https://restrict.sjtu.edu.cn/
+
+    <SJTU campus restriction page: "抱歉，如果您是在校外访问本网站。建议您先拨通学校的VPN后再访问。">
+  note: >-
+    Campus-network restriction, not a dead host. Any harvest of this surface from outside the SJTU
+    network will see the restriction page, and reading that as a 200 is exactly the soft-200 trap.

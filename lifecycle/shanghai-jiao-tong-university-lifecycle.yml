@@ -1,0 +1,99 @@
+generated: '2026-08-30'
+method: searched
+source: https://developer.sjtu.edu.cn/
+x-operator: institution
+versioning:
+  scheme: uri-path
+  platforms:
+  - name: Open API
+    base: https://api.sjtu.edu.cn
+    current: v1
+    also_live: v2
+    detail: >-
+      Fifty-eight of the fifty-nine documented Open API operations are under /v1. Exactly one is
+      under /v2 — POST /v2/task/message, the InfoPlus task-update endpoint. There is no /v2 for
+      anything else and no explanation of what v2 means, so the version segment marks a per-endpoint
+      revision rather than a platform generation.
+  - name: Data Resources
+    base: https://graphql.sjtu.edu.cn
+    current: v1
+    detail: All ten documented operations are under /v1.
+  stability_marking: >-
+    None. No endpoint carries a beta, preview, experimental or stable marker anywhere on the portal.
+transitions:
+- change: GraphQL to REST
+  surface: Data Resources (数据资源)
+  from:
+    protocol: GraphQL
+    endpoint: https://graphql.sjtu.edu.cn/graphql
+    docs: https://developer.sjtu.edu.cn/graphql/graphql.html
+    shape: >-
+      POST a {"query": "..."} body. A hand-rolled query language with three built-in arguments
+      (first, offset, filter), twelve filter keywords (eq, ne, ge, gt, le, lt, like, nlike, in,
+      nin, nil, notnull) and AND/OR nesting.
+  to:
+    protocol: REST
+    base: https://graphql.sjtu.edu.cn/v1
+    docs: https://developer.sjtu.edu.cn/graphql/overview.html
+    shape: GET with query-string filters and first/offset paging.
+  status: complete in the documentation
+  evidence: >-
+    Every current data-resource page (account, faculty, student, paper, asset) documents REST GET
+    operations and carries the line "…基于GraphQL协议老版本接口说明请参考此处" — "for the old-version
+    interface based on the GraphQL protocol, see here". The overview states plainly that
+    "最新版数据资源API是基于restful风格API接口".
+  observed_date: '2026-08-30'
+  deprecation_signalling:
+    sunset_header: false
+    deprecation_header: unknown
+    policy_url: null
+    detail: >-
+      The migration is signalled ONLY by the words 老版本 (old version) in prose on each page and by
+      the new documentation being the default. There is no Deprecation or Sunset header contract, no
+      dated end-of-life, no changelog entry and no migration guide. The GraphQL documentation page
+      remains live at its original URL and still describes the query language as current in its own
+      body text.
+  consequence: >-
+    This is why the API Evangelist profile of SJTU was wrong. Until 2026-08-30 this repo described a
+    GraphQL API at https://graphql.sjtu.edu.cn/graphql, split into five apis[] entries by data
+    category, and did not record the REST platform that replaced it or the fifth (asset) category
+    added since. Nothing in the university's own signalling would have told a subscriber the
+    contract had changed.
+  category_added:
+    name: 资产类 (Asset)
+    endpoint: https://graphql.sjtu.edu.cn/v1/asset/info
+    detail: A fifth data-resource category that did not exist in the profile taken on 2026-06-03.
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  detail: >-
+    SJTU publishes no deprecation policy, no versioning policy, no changelog, no status page and no
+    developer announcements channel. There is no way for an integrator to be notified that a
+    contract has changed; the only signal is re-reading the portal.
+change_communication:
+  changelog: null
+  status_page: null
+  announcements: null
+  contact: >-
+    Scope additions are requested by email to the platform maintainer named on
+    https://developer.sjtu.edu.cn/api/overview.html. IDE access for the 交我办 process platform is
+    requested by contacting the Network and Information Center directly with a jAccount name.
+  detail: >-
+    Support is a person, not a system. That is workable for a closed campus developer population and
+    it is the honest reason this platform scores low on operational transparency without being in
+    any way unserious.
+observations:
+- >-
+  The Open API documentation still carries an example response referencing home.sjtu.edu.cn avatar
+  URLs and a circles/trust-circle model (errno 15008, 15009 — "a circle administrator may not trust
+  their own circle") that no documented endpoint exposes. The error table is older than the endpoint
+  list, which dates the platform: this is a long-running system with accumulated strata, not a
+  recent build.
+- >-
+  Resource-owner password credentials is still an offered grant. It is deprecated in OAuth 2.1.
+- >-
+  The Shibboleth IdP's signing certificate was issued 2016-10-01 with a twenty-year validity, and
+  the IdP still reports Server: Apache-Coyote/1.1 — consistent with an identity platform stood up in
+  the mid-2010s and kept running rather than rebuilt.

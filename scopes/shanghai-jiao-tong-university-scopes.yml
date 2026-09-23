@@ -1,0 +1,333 @@
+generated: '2026-08-30'
+method: searched
+source: https://developer.sjtu.edu.cn/auth/oauth.html#授权范围
+x-operator: institution
+note: 'The complete OAuth 2.0 authorization-scope registry SJTU publishes for its own jAccount authorization
+  server. The scope strings, the bit values and the supported grants are the university''s, read verbatim
+  from the 授权范围列表 table on its developer portal; the English descriptions are ours, translated from
+  the Chinese in the same table.
+
+
+  Two things are worth reading off this list. First, it is a bitmask registry — every scope has a value
+  of the form 1<<n and the portal documents that a caller may request multiple scopes either as a space-separated
+  string or as the SUM of the values (scope=basic essential is equivalent to scope=3). That is an unusual,
+  pre-OAuth-2.1 design and it is stated openly. Second, the gaps in the bit sequence (there is no 1<<4,
+  1<<13..16, 1<<18..19, 1<<21..22, 1<<24, 1<<28, 1<<31..33) are retired or internal scopes; only the
+  39 published here are documented.
+
+
+  Note the mismatch with discovery: the OIDC metadata at https://jaccount.sjtu.edu.cn/oauth2/.well-known/openid-configuration
+  advertises scopes_supported as [openid, basic] only. An agent reading discovery alone sees 2 scopes;
+  the documentation publishes 39.'
+schemes:
+- name: jAccountOAuth2
+  source: https://jaccount.sjtu.edu.cn/oauth2/.well-known/openid-configuration
+  issuer: https://jaccount.sjtu.edu.cn/oauth2/
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://jaccount.sjtu.edu.cn/oauth2/authorize
+    tokenUrl: https://jaccount.sjtu.edu.cn/oauth2/token
+  - flow: clientCredentials
+    tokenUrl: https://jaccount.sjtu.edu.cn/oauth2/token
+  - flow: password
+    tokenUrl: https://jaccount.sjtu.edu.cn/oauth2/token
+  combination: Space-separated scope names, or the arithmetic sum of the bit values.
+scopes:
+- scope: openid
+  value: null
+  description: Standard OpenID Connect scope — requests an ID token for the signed-in user. Advertised
+    in the discovery document but absent from the portal's 授权范围列表 table.
+  flows:
+  - authorizationCode
+  sources:
+  - well-known/shanghai-jiao-tong-university-openid-configuration.json
+- scope: basic
+  value: 1<<0
+  description: Read the user's identifier (system id and jAccount name) and real name.
+  flows:
+  - authorizationCode
+  - clientCredentials
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: essential
+  value: 1<<1
+  description: Read basic identifier and name plus the bound identity (identity id, identity type, and
+    owning department/school).
+  flows:
+  - authorizationCode
+  - clientCredentials
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: profile
+  value: 1<<2
+  description: Read fuller user detail — basic identifier, name, account information, mobile number,
+    usual email address.
+  flows:
+  - authorizationCode
+  - clientCredentials
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: unicode
+  value: 1<<3
+  description: Activate, retrieve or validate the Siyuan code (思源码).
+  flows:
+  - authorizationCode
+  - clientCredentials
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: tasks
+  value: 1<<5
+  description: Read actionable/pending/in-progress/completed task lists; read or aggregate manageable
+    workflows, instances and tasks.
+  flows:
+  - authorizationCode
+  - clientCredentials
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: messages
+  value: 1<<6
+  description: Read the user's messages.
+  flows:
+  - clientCredentials
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: notifications
+  value: 1<<7
+  description: Read the user's system notifications.
+  flows:
+  - authorizationCode
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: privacy
+  value: 1<<8
+  description: Read the user's detailed information, including personal ID-document details and date
+    of birth.
+  flows:
+  - authorizationCode
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: introspect
+  value: 1<<9
+  description: Introspect an OAuth token. API-development use only.
+  flows:
+  - clientCredentials
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: read_apps
+  value: 1<<10
+  description: Read application registration information.
+  flows:
+  - clientCredentials
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: write_apps
+  value: 1<<11
+  description: Create and modify application registration information.
+  flows:
+  - clientCredentials
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: exchange_data
+  value: 1<<12
+  description: Data exchange — the scope the Data Resources APIs on graphql.sjtu.edu.cn require.
+  flows:
+  - clientCredentials
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: signature
+  value: 1<<17
+  description: Obtain a digital signature.
+  flows:
+  - authorizationCode
+  - clientCredentials
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: manage_card
+  value: 1<<20
+  description: Campus-card management, such as account opening.
+  flows:
+  - authorizationCode
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: send_app_notification
+  value: 1<<23
+  description: Send a Jiao-Wo-Ban (交我办) app notification to a user.
+  flows:
+  - clientCredentials
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: send_notification
+  value: 1<<25
+  description: Send a notification to a user.
+  flows:
+  - password
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: read_mails
+  value: 1<<26
+  description: Read the user's mail.
+  flows:
+  - authorizationCode
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: send_mail
+  value: 1<<27
+  description: Send mail on the user's behalf, or change a message's read state.
+  flows:
+  - authorizationCode
+  - password
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: storage
+  value: 1<<29
+  description: Full control of the application's own unstructured storage.
+  flows:
+  - clientCredentials
+  - password
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: modify_notification
+  value: 1<<30
+  description: Modify the state of the application's own notifications.
+  flows:
+  - authorizationCode
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: lessons
+  value: 1<<34
+  description: Read the user's lesson information.
+  flows:
+  - authorizationCode
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: classes
+  value: 1<<35
+  description: Read the user's timetable (including courses).
+  flows:
+  - authorizationCode
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: exams
+  value: 1<<36
+  description: Read the user's examination information.
+  flows:
+  - authorizationCode
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: scores
+  value: 1<<37
+  description: Read the user's examination results.
+  flows:
+  - authorizationCode
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: students_list
+  value: 1<<38
+  description: Read the enrolled-student roster for a class (teacher).
+  flows:
+  - authorizationCode
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: card_info
+  value: 1<<39
+  description: Read the user's campus-card information.
+  flows:
+  - authorizationCode
+  - clientCredentials
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: card_transactions
+  value: 1<<40
+  description: Read the user's campus-card transaction records.
+  flows:
+  - authorizationCode
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: write_card_info
+  value: 1<<41
+  description: Campus-card write operations — change the query password, report a card lost, top up
+    from a bound bank card.
+  flows:
+  - authorizationCode
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: income
+  value: 1<<42
+  description: Query the user's income information.
+  flows:
+  - authorizationCode
+  - clientCredentials
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: create_jaccount
+  value: 1<<43
+  description: Create a jAccount account.
+  flows:
+  - clientCredentials
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: edit_jaccount
+  value: 1<<44
+  description: Modify a jAccount account.
+  flows:
+  - authorizationCode
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: net_service_info
+  value: 1<<45
+  description: Read all personal network-service information for a specified user.
+  flows:
+  - authorizationCode
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: connect_wechat
+  value: 1<<46
+  description: Bind a jAccount to a WeChat account.
+  flows:
+  - authorizationCode
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: connect_shmec
+  value: 1<<47
+  description: Bind a jAccount to a Shanghai Municipal Education Commission account.
+  flows:
+  - authorizationCode
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: print
+  value: 1<<48
+  description: Self-service printing.
+  flows:
+  - authorizationCode
+  - clientCredentials
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: connect_finance
+  value: 1<<49
+  description: Integrate with the finance appointment system.
+  flows:
+  - clientCredentials
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: student_affairs
+  value: 1<<50
+  description: Retrieve student-affairs information.
+  flows:
+  - clientCredentials
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: bus
+  value: 1<<51
+  description: Read campus-bus and inter-campus shuttle timetables and real-time information.
+  flows:
+  - clientCredentials
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html
+- scope: calendar
+  value: 1<<52
+  description: Synchronise calendar information.
+  flows:
+  - authorizationCode
+  - clientCredentials
+  sources:
+  - https://developer.sjtu.edu.cn/auth/oauth.html

@@ -1,3 +1,6 @@
+# x-method: derived
+# Written by API Evangelist from SJTU's own developer portal and live probes, 2026-08-30.
+# Not authored or published by Shanghai Jiao Tong University.
 specification: FinOps Framework
 specificationVersion: '1.0'
 schema: https://www.finops.org/framework/

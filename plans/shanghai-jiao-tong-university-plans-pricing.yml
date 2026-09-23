@@ -1,3 +1,6 @@
+# x-method: derived
+# Written by API Evangelist from SJTU's own developer portal and live probes, 2026-08-30.
+# Not authored or published by Shanghai Jiao Tong University.
 specification: API Commons Plans
 specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
@@ -12,15 +15,17 @@ tags:
 - University
 - Plans
 description: >-
-  Shanghai Jiao Tong University is a non-commercial higher-education institution; its APIs are not sold
-  as a commercial product. Public APIs (library, repository, course, and open-metadata
-  interfaces) are offered free of charge, typically for non-commercial use. Most
-  administrative and identity APIs are not openly self-service and require institutional
-  affiliation, credentials, or federation membership rather than a paid plan.
+  Shanghai Jiao Tong University charges nothing for API access and publishes no pricing page of any
+  kind. Its three programmable surfaces — the Open API at api.sjtu.edu.cn, the Data Resources API at
+  graphql.sjtu.edu.cn and the jAccount identity platform — are all free, and all gated by approval
+  rather than by payment. There is no self-service tier and no anonymous tier: an application must
+  be registered through my.sjtu.edu.cn or the 交我办 app to receive an appId and a 48-character
+  appSecret, and every OAuth scope must be separately approved. Data Resources access additionally
+  requires the 数据资源申请流程 approval workflow, which grants named FIELDS rather than endpoints,
+  and its host is restricted to the campus network. Verified 2026-08-30.
 notes: >-
-  No published per-seat or per-call commercial pricing. "Free / Open" reflects open
-  public endpoints; "Affiliation / Credentialed" reflects access gated by institutional
-  identity rather than payment.
+  No commercial pricing exists to record. "Free / Open" here means free-of-charge, NOT
+  openly callable — nothing SJTU operates can be called without an approved jAccount application.
 sources:
 - https://raw.githubusercontent.com/api-evangelist/shanghai-jiao-tong-university/refs/heads/main/apis.yml
 plans:

@@ -1,0 +1,196 @@
+generated: '2026-08-30'
+method: derived
+x-evidence-method: probed
+x-authorship: >-
+  Written by API Evangelist from live probes of SJTU's own hosts plus SJTU's own published
+  documentation. Not authored or published by Shanghai Jiao Tong University.
+source: openapi/shanghai-jiao-tong-university-open-api-openapi.yml
+also:
+- openapi/shanghai-jiao-tong-university-data-resources-openapi.yml
+- well-known/shanghai-jiao-tong-university-saml-idp-metadata.xml
+- well-known/shanghai-jiao-tong-university-openid-configuration.json
+docs: https://developer.sjtu.edu.cn/
+x-operator: institution
+regime: education
+note: >-
+  Conformance measured against the Kin Score `education` regulatory regime's standards[] plus the
+  general API standards SJTU's own contracts exercise. Every `true` below points at a document or a
+  live response we fetched, not at a prose claim. The headline finding is identity: SJTU operates a
+  Shibboleth SAML 2.0 identity provider and publishes its metadata openly, which is the single most
+  under-catalogued institution-operated machine-readable surface in higher education and the reason
+  this profile changed on 2026-08-30.
+
+  The headline absence is scholarly infrastructure. SJTU runs a Paper API over its own publication
+  records and it carries DOIs and Web of Science accession numbers as opaque string fields — but it
+  does not speak Crossref, DataCite or ORCID, and no OAI-PMH endpoint could be reached on any SJTU
+  host. For a university of this research output that is a real gap, not a measurement artifact.
+standards:
+- id: shibboleth
+  conforms: true
+  regime_standard: true
+  evidence: >-
+    https://jaccount.sjtu.edu.cn/idp/shibboleth returns 200 application/xml — a Shibboleth IdP
+    EntityDescriptor with entityID https://jaccount.sjtu.edu.cn/idp/shibboleth, a
+    shibmd:Scope of sjtu.edu.cn, mdui:DisplayName "SJTU Identity Provider", and
+    protocolSupportEnumeration including urn:mace:shibboleth:1.0. Saved verbatim at
+    well-known/shanghai-jiao-tong-university-saml-idp-metadata.xml. Probed 2026-08-30.
+- id: saml
+  conforms: true
+  regime_standard: true
+  evidence: >-
+    The same metadata document declares urn:oasis:names:tc:SAML:2.0:protocol and
+    urn:oasis:names:tc:SAML:1.1:protocol, with four SAML 2.0 SingleSignOnService bindings
+    (HTTP-POST, HTTP-POST-SimpleSign, HTTP-Redirect, plus the Shibboleth AuthnRequest profile),
+    four SingleLogoutService bindings, SAML 1.0 and 2.0 ArtifactResolutionService, and a SAML 1.1
+    AttributeAuthorityDescriptor exposing SOAP AttributeQuery at
+    /idp/profile/SAML2/SOAP/AttributeQuery.
+- id: oai-pmh
+  conforms: false
+  regime_standard: true
+  evidence: >-
+    No OAI-PMH endpoint was reachable. Probed 2026-08-30 without a single 200:
+    https://oai.sjtu.edu.cn (DNS does not resolve), https://ir.sjtu.edu.cn (does not resolve),
+    https://ir.lib.sjtu.edu.cn (CNAMEs to tpi.lib.sjtu.edu.cn, which has no A record),
+    https://www.lib.sjtu.edu.cn/oai (404), https://scholar.sjtu.edu.cn/oai?verb=Identify
+    (TLS handshake completes, then no HTTP response from outside China). The institutional
+    repository at scholar.sjtu.edu.cn is real and institution-operated but could not be read from
+    our vantage, so this is recorded as not-found rather than not-published.
+- id: orcid
+  conforms: false
+  regime_standard: true
+  evidence: >-
+    The Paper API response structure documented at
+    https://developer.sjtu.edu.cn/graphql/paper.html has 38 fields and none of them is an ORCID
+    iD. Authors are keyed by userId (the internal staff/student number) and name only, so a
+    publication record cannot be joined to the global researcher graph.
+- id: datacite
+  conforms: false
+  regime_standard: true
+  evidence: >-
+    A `doi` field is carried on the Paper API record as an opaque string, but no DataCite metadata
+    schema, DOI registration surface or DataCite REST API interaction is documented anywhere on
+    developer.sjtu.edu.cn. Carrying a DOI is not conforming to DataCite.
+- id: crossref
+  conforms: false
+  regime_standard: true
+  evidence: >-
+    Same as datacite. The Paper API's `doi` and `wos` (Web of Science accession number) fields are
+    strings in SJTU's own record shape; there is no Crossref deposit, query or metadata conformance.
+- id: scim
+  conforms: false
+  regime_standard: true
+  evidence: >-
+    SJTU has a rich identity and directory surface — /v1/me/profile, /v1/profile/{account},
+    /v1/enterprise/user/positions, /v1/enterprise/organizes, plus create_jaccount and edit_jaccount
+    scopes — but it is entirely a bespoke shape with a canvas.profile kind and an errno/entities
+    envelope. No /scim/v2 path, no urn:ietf:params:scim schema URN and no SCIM ServiceProviderConfig
+    appears in any documented contract.
+- id: lti
+  conforms: false
+  regime_standard: true
+  evidence: >-
+    No LTI tool, platform, deep-linking or names-and-roles surface is documented on
+    developer.sjtu.edu.cn. The Education APIs (/v1/lesson, /v1/me/lessons, /v1/me/examinations,
+    /v1/gpa) are SJTU's own shape, not an LTI service.
+- id: oneroster
+  conforms: false
+  regime_standard: true
+  evidence: >-
+    Roster data exists — the students_list scope reads a teaching class's enrolled-student roster,
+    and /v1/course/selection returns enrolment records — but neither uses the OneRoster REST binding,
+    its /ims/oneroster/v1p1 path shape, or its sourcedId model.
+- id: ed-fi
+  conforms: false
+  regime_standard: true
+  evidence: No Ed-Fi ODS, API surface or data-standard reference appears on any SJTU host. Ed-Fi is a K-12 standard and its absence at a research university is expected.
+- id: caliper
+  conforms: false
+  regime_standard: true
+  evidence: No Caliper Analytics sensor, event store or IMS Caliper envelope is documented. No learning-event stream of any kind is published.
+- id: qti
+  conforms: false
+  regime_standard: true
+  evidence: >-
+    Examination data is exposed as results only (/v1/me/examinations, /v1/gpa, scopes exams and
+    scores). No assessment item, test or QTI package interchange surface is documented.
+- id: oauth2
+  conforms: true
+  evidence: >-
+    RFC 6749 authorization server operated by the institution at
+    https://jaccount.sjtu.edu.cn/oauth2/. Three grants are documented per operation — authorization
+    code, client credentials, and resource-owner password. The authorize endpoint answers live: an
+    unparameterised GET returned 400
+    {"error":"invalid_request","error_description":"Missing response_type parameter value"} on
+    2026-08-30, which is the correct RFC 6749 §4.1.2.1 error response.
+- id: openid-connect-discovery
+  conforms: partial
+  evidence: >-
+    https://jaccount.sjtu.edu.cn/oauth2/.well-known/openid-configuration returns 200
+    application/json with issuer, authorization_endpoint, token_endpoint,
+    response_types_supported, subject_types_supported, id_token_signing_alg_values_supported and
+    scopes_supported. Partial on two counts. (1) It is served at the issuer-relative path, not at
+    the host root, so a conventional root probe of jaccount.sjtu.edu.cn misses it — a real
+    discoverability defect. (2) It omits jwks_uri, userinfo_endpoint, registration_endpoint and
+    code_challenge_methods_supported, and advertises scopes_supported as [openid, basic] while the
+    portal documents 39 scopes.
+- id: openid-connect-core
+  conforms: partial
+  evidence: >-
+    ID tokens are JWTs carrying iss/sub/aud/nonce/exp/iat plus SJTU claims name, code and type,
+    documented at https://developer.sjtu.edu.cn/auth/oidc.html. Partial because
+    id_token_signing_alg_values_supported is HS256 only — the token is symmetrically signed with
+    the client_secret, so a public client cannot verify it, and there is no JWKS to publish.
+- id: rfc6750-bearer-token
+  conforms: true
+  evidence: >-
+    The overview documents both bearer forms: "Authorization: Bearer {token}" as a header, and
+    access_token as a query or body parameter, citing RFC 6750 Authenticated Requests by name.
+    See https://developer.sjtu.edu.cn/api/overview.html#调用参数.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: >-
+    Errors use SJTU's own envelope ({errno, error, total}) with content type
+    application/json;charset=UTF-8, not application/problem+json. Confirmed live: GET
+    https://api.sjtu.edu.cn/v1/me/profile returned 403 with
+    {"errno":10002,"error":"Authentication Failed.","total":0} on 2026-08-30.
+- id: openapi
+  conforms: false
+  evidence: >-
+    SJTU publishes no OpenAPI, AsyncAPI or Postman collection on any host. /openapi.json returned
+    404 on developer.sjtu.edu.cn and www.sjtu.edu.cn and an empty reply on api.sjtu.edu.cn;
+    /.well-known/api-catalog returned 404. The two OpenAPI documents in this repo are DERIVED by
+    API Evangelist from the university's own HTML documentation and are marked as such in
+    info.x-provenance.
+- id: graphql
+  conforms: deprecated
+  evidence: >-
+    A GraphQL implementation of the Data Resources API did exist at
+    https://graphql.sjtu.edu.cn/graphql, with its own query language, filter keyword set (eq, ne,
+    ge, gt, le, lt, like, nlike, in, nin, nil, notnull) and AND/OR nesting, documented at
+    https://developer.sjtu.edu.cn/graphql/graphql.html. Every current data-resource page now labels
+    it the 老版本 (old version) interface and documents REST GETs under
+    https://graphql.sjtu.edu.cn/v1 instead. No GraphQL introspection could be run — the host is
+    campus-restricted.
+- id: rfc8615-well-known
+  conforms: partial
+  evidence: >-
+    One well-known document is published (the OIDC configuration) and it is not at the host root.
+    No security.txt, no api-catalog, no agent card and no llms.txt on any SJTU host. See
+    well-known/shanghai-jiao-tong-university-well-known.yml for the full probe table.
+federation:
+- name: CARSI
+  full_name: CERNET Authentication and Resource Sharing Infrastructure
+  role: member
+  evidence: >-
+    SJTU's IdP entityID https://jaccount.sjtu.edu.cn/idp/shibboleth is a CARSI-registered Shibboleth
+    entity. CARSI is the Chinese national research-and-education federation, initiated at Peking
+    University in 2008.
+  method: searched
+- name: eduGAIN
+  role: member via CARSI
+  evidence: >-
+    CARSI became a full eduGAIN member on 2019-05-24, so SJTU's IdP is reachable from the
+    international interfederation. The SJTU IdP entity appears in eduGAIN's own release-check
+    results tooling.
+  method: searched
+  confidence: medium

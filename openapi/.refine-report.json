@@ -1,0 +1,58 @@
+{
+  "provider": "shanghai-jiao-tong-university",
+  "sources": [
+    "_original/shanghai-jiao-tong-university-data-resources-openapi.yml",
+    "_original/shanghai-jiao-tong-university-open-api-openapi.yml"
+  ],
+  "outputs": [
+    "shanghai-jiao-tong-university-account-api-openapi.yml",
+    "shanghai-jiao-tong-university-asset-api-openapi.yml",
+    "shanghai-jiao-tong-university-faculty-api-openapi.yml",
+    "shanghai-jiao-tong-university-paper-api-openapi.yml",
+    "shanghai-jiao-tong-university-undergraduate-teaching-api-openapi.yml",
+    "shanghai-jiao-tong-university-barcode-api-openapi.yml",
+    "shanghai-jiao-tong-university-calendar-api-openapi.yml",
+    "shanghai-jiao-tong-university-card-api-openapi.yml",
+    "shanghai-jiao-tong-university-education-api-openapi.yml",
+    "shanghai-jiao-tong-university-enterprise-api-openapi.yml",
+    "shanghai-jiao-tong-university-file-api-openapi.yml",
+    "shanghai-jiao-tong-university-finance-api-openapi.yml",
+    "shanghai-jiao-tong-university-mail-api-openapi.yml",
+    "shanghai-jiao-tong-university-notification-api-openapi.yml",
+    "shanghai-jiao-tong-university-profile-api-openapi.yml",
+    "shanghai-jiao-tong-university-signature-api-openapi.yml",
+    "shanghai-jiao-tong-university-task-api-openapi.yml",
+    "shanghai-jiao-tong-university-unicode-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "1 archived document(s) dropped as subsets of other archived documents",
+    "sourced from openapi/_original/ (2 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "shanghai-jiao-tong-university-data-resources-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "shanghai-jiao-tong-university-open-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "_original/shanghai-jiao-tong-university-data-resources-openapi_2.yml: archived document superseded by a larger archived document",
+    "shanghai-jiao-tong-university-account-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shanghai-jiao-tong-university-asset-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shanghai-jiao-tong-university-barcode-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shanghai-jiao-tong-university-calendar-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shanghai-jiao-tong-university-card-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shanghai-jiao-tong-university-education-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shanghai-jiao-tong-university-enterprise-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shanghai-jiao-tong-university-faculty-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shanghai-jiao-tong-university-file-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shanghai-jiao-tong-university-finance-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shanghai-jiao-tong-university-mail-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shanghai-jiao-tong-university-notification-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shanghai-jiao-tong-university-paper-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shanghai-jiao-tong-university-profile-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shanghai-jiao-tong-university-signature-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shanghai-jiao-tong-university-task-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shanghai-jiao-tong-university-undergraduate-teaching-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shanghai-jiao-tong-university-unicode-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

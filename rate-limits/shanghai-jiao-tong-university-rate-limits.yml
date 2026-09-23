@@ -1,3 +1,6 @@
+# x-method: derived
+# Written by API Evangelist from SJTU's own developer portal and live probes, 2026-08-30.
+# Not authored or published by Shanghai Jiao Tong University.
 specification: API Commons Rate Limits
 specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
@@ -12,11 +15,18 @@ tags:
 - University
 - Rate Limiting
 description: >-
-  Shanghai Jiao Tong University does not publish a unified public rate-limit table across its APIs. Open
-  metadata and harvesting endpoints (OAI-PMH, IIIF, library) may throttle large-scale
-  or automated harvesting; clients should harvest politely, honor Retry-After, and
-  contact the relevant service for bulk access.
-notes: Confirm per-service limits with each API's documentation; harvest responsibly.
+  Shanghai Jiao Tong University publishes NO rate-limit documentation for any of its APIs. The Open
+  API overview documents status codes, error codes, paging and the request envelope but names no
+  quota, no throttle, no 429 behaviour and no Retry-After contract; there is no X-RateLimit header
+  family in any documented response. The only published volume constraint anywhere on the platform
+  is a paging cap: the Data Resources API limits offset to 200 records per call, and the Open API
+  defaults limit to 100. Reviewed against the developer portal on 2026-08-30 — this is a documented
+  absence, not an unchecked one, and the earlier reference here to OAI-PMH, IIIF and library
+  harvesting endpoints was scaffold text describing surfaces SJTU does not operate.
+notes: >-
+  No published limits. Treat the 200-record Data Resources page cap and the 100-record Open API
+  default as the only stated volume constraints, and contact the Network and Information Center for
+  anything bulk.
 sources:
 - https://raw.githubusercontent.com/api-evangelist/shanghai-jiao-tong-university/refs/heads/main/apis.yml
 responseCodes:

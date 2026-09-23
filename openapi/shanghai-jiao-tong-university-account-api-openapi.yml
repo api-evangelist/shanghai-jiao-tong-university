@@ -1,0 +1,166 @@
+openapi: 3.2.0
+info:
+  title: Shanghai Jiao Tong University Data Resources Account API
+  version: 1.0.0
+  summary: SJTU's institution-operated institutional-data exchange API — accounts, faculty, undergraduate teaching, papers and assets.
+  description: 数据资源 (Data Resources) is Shanghai Jiao Tong University's own institutional data-exchange API, operated by the SJTU Network and Information Center and documented at https://developer.sjtu.edu.cn/graphql/overview.html.
+  termsOfService: https://developer.sjtu.edu.cn/graphql/overview.html
+  contact:
+    name: Shanghai Jiao Tong University Network and Information Center
+    url: https://developer.sjtu.edu.cn/
+  x-operator: institution
+  x-provenance:
+    method: derived
+    source: https://developer.sjtu.edu.cn/graphql/overview.html
+    generated: '2026-08-30'
+    note: 'Paths, query parameters, scope and paging semantics read from the operation blocks and parameter tables the SJTU developer portal renders on developer.sjtu.edu.cn/graphql/{overview,account,faculty,student,paper,asset}.html. Liveness probed 2026-08-30: https://graphql.sjtu.edu.cn/v1/account/info returned 302 to https://restrict.sjtu.edu.cn/ (campus-network restriction), not a 404 — the host is live and gated, not dead.'
+servers:
+- url: https://graphql.sjtu.edu.cn
+  description: SJTU Data Resources host. Restricted to the campus network; off-campus callers are redirected to restrict.sjtu.edu.cn and must use the SJTU VPN.
+tags:
+- name: Account
+  description: '账号类 — account records: jAccount name, staff/student number, display name, unit, ID document, identity type and account status.'
+paths:
+  /v1/account/info:
+    get:
+      summary: Account information
+      description: Account information. Documented as “账号信息” on the SJTU developer platform Data Resources section. Requires an approved data-resource application; the token is obtained with the OAuth 2.0 client-credentials grant and the exchange_data scope. Field-level access control applies — fields the application was not granted are returned empty.
+      operationId: get_v1_account_info
+      tags:
+      - Account
+      parameters:
+      - name: accountNo
+        in: query
+        required: false
+        description: jAccount账号
+        schema:
+          type: string
+      - name: userId
+        in: query
+        required: false
+        description: 学工号
+        schema:
+          type: string
+      - name: displayName
+        in: query
+        required: false
+        description: 姓名
+        schema:
+          type: string
+      - name: topOrganizeId
+        in: query
+        required: false
+        description: 二级部门代码
+        schema:
+          type: string
+      - name: cardNo
+        in: query
+        required: false
+        description: 证件号
+        schema:
+          type: string
+      - name: userStyle
+        in: query
+        required: false
+        description: 默认身份类型 （见下方代码表）
+        schema:
+          type: string
+      - name: accountStatus
+        in: query
+        required: false
+        description: 账号状态（正常/过期/冻结）
+        schema:
+          type: string
+      - name: timestamp
+        in: query
+        required: false
+        description: 更新时间（yyyy-MM-dd/yyyy-MM-dd HH:mm:ss）,取大于等于该时间戳的数据
+        schema:
+          type: string
+      - name: first
+        in: query
+        required: false
+        description: 分页起始位置 分页参数说明
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        required: false
+        description: 分页偏移量
+        schema:
+          type: integer
+      security:
+      - jAccountOAuth2:
+        - exchange_data
+      responses:
+        '200':
+          description: Success. errno is 0 and the records are carried in entities[].
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Envelope'
+        '400':
+          description: Bad Request — usually a parameter error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Forbidden — authentication or scope check failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found — the resource path is wrong.
+        '405':
+          description: Method Not Allowed.
+        '503':
+          description: Service Unavailable — the API server is restarting or down for maintenance.
+components:
+  schemas:
+    Envelope:
+      type: object
+      description: The common response envelope every Data Resources API returns.
+      properties:
+        errno:
+          type: integer
+          description: Error code. 0 means the call succeeded.
+          example: 0
+        error:
+          type: string
+          nullable: true
+          description: Optional error message.
+        total:
+          type: integer
+          description: Number of records returned by this call. Use it when paging to decide whether to keep querying.
+        entities:
+          type: array
+          description: Returned records.
+          items:
+            type: object
+      required:
+      - errno
+    Error:
+      type: object
+      properties:
+        errno:
+          type: integer
+        error:
+          type: string
+        total:
+          type: integer
+      required:
+      - errno
+  securitySchemes:
+    jAccountOAuth2:
+      type: oauth2
+      description: OAuth 2.0 client-credentials grant issued by SJTU's own jAccount authorization server. The exchange_data scope must be approved through the data-resource application workflow.
+      flows:
+        clientCredentials:
+          tokenUrl: https://jaccount.sjtu.edu.cn/oauth2/token
+          scopes:
+            exchange_data: Data exchange — required by every Data Resources operation.
+externalDocs:
+  description: SJTU Developer Platform — Data Resources documentation
+  url: https://developer.sjtu.edu.cn/graphql/overview.html
