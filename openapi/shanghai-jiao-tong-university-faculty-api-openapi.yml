@@ -245,6 +245,17 @@ paths:
           description: Service Unavailable — the API server is restarting or down for maintenance.
 components:
   schemas:
+    Error:
+      type: object
+      properties:
+        errno:
+          type: integer
+        error:
+          type: string
+        total:
+          type: integer
+      required:
+      - errno
     Envelope:
       type: object
       description: The common response envelope every Data Resources API returns.
@@ -265,17 +276,6 @@ components:
           description: Returned records.
           items:
             type: object
-      required:
-      - errno
-    Error:
-      type: object
-      properties:
-        errno:
-          type: integer
-        error:
-          type: string
-        total:
-          type: integer
       required:
       - errno
   securitySchemes:

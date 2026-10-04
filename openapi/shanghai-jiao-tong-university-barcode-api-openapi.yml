@@ -118,6 +118,21 @@ paths:
           description: Service Unavailable — the API server is restarting or down for maintenance.
 components:
   schemas:
+    Error:
+      type: object
+      description: Error payload. errno carries the SJTU API error code; see errors/shanghai-jiao-tong-university-errors.yml.
+      properties:
+        errno:
+          type: integer
+          example: 10002
+        error:
+          type: string
+          example: Authentication Failed.
+        total:
+          type: integer
+          example: 0
+      required:
+      - errno
     Envelope:
       type: object
       description: The common response envelope every SJTU open API returns.
@@ -141,21 +156,6 @@ components:
           description: Returned objects. Length 0 when there is no object; a single object is at entities[0].
           items:
             type: object
-      required:
-      - errno
-    Error:
-      type: object
-      description: Error payload. errno carries the SJTU API error code; see errors/shanghai-jiao-tong-university-errors.yml.
-      properties:
-        errno:
-          type: integer
-          example: 10002
-        error:
-          type: string
-          example: Authentication Failed.
-        total:
-          type: integer
-          example: 0
       required:
       - errno
   securitySchemes:
